@@ -1,0 +1,6 @@
+Drop Database: yarn sequelize-cli db:drop
+Create Database: yarn sequelize-cli db:create
+Migrate Databse: yarn sequelize-cli db:migrate
+Rollback Migration: yarn sequelize-cli db:migrate:undo
+add table migration: yarn sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+Add migration: yarn sequelize-cli migration:generate --name migration-skeleton
