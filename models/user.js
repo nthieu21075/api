@@ -16,8 +16,22 @@ const User = sequelizeDb.define('users', {
             isEmail : true
         }
     },
+    organizerName: {
+        type: sequelize.STRING,
+        allowNull: true,
+        unique: true,
+    },
+    address: {
+        type: sequelize.STRING,
+        allowNull: true
+    },
+    phoneNumber: {
+        type: sequelize.STRING,
+        allowNull: true
+    },
     location: {
-        type: sequelize.STRING
+        type: sequelize.ARRAY(sequelize.TEXT),
+        defaultValue: []
     },
     userType: {
         type: sequelize.ENUM,

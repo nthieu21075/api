@@ -12,10 +12,10 @@ exports.responseError = (res, httpCode, resCode, message) => {
   }
 }
 
-exports.responseData = (res, data, sendCookie = false) => {
+exports.responseData = (res, data, sendCookie = false, token = null) => {
     if (sendCookie) {
-        res.cookie('token', data.token, { httpOnly: true })
+        return res.status(200).send({ code: 200, data: data, token: token })
     }
 
-    res.status(200).send({ code: 200, data: data})
+    res.status(200).send({ code: 200, data: data })
 }

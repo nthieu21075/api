@@ -10,7 +10,7 @@ exports.asyncMiddleware = fn => (req, res) => {
 
 const getValidationMessage = (err) => {
     let messages = {}
-
+    console.log(err)
     if (err instanceof Sequelize.ValidationError) {
         err.errors.forEach((error) => {
             let message

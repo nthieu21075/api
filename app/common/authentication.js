@@ -19,7 +19,8 @@ exports.login = async (req, res) => {
                 responseError(res, 200, 401, 'Incorrect password')
             } else {
                 const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '1h' })
-                responseData(res, { user: userSerialize(user.get({plain: true})) }, true)
+
+                responseData(res, { user: userSerialize(user.get({plain: true})) }, true, token)
             }
         })
     }
@@ -34,5 +35,5 @@ exports.register = async (req, res) => {
     }
     const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '1h' })
 
-    responseData(res, { user: userSerialize(user.get({plain: true})) })
+    responseData(res, { user: userSerialize(user.get({plain: true})) }, true, token)
 }
