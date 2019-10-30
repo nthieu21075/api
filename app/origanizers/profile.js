@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const R = require('ramda')
 const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
@@ -15,5 +16,45 @@ exports.updateProfile = async (req, res) => {
         responseError(res, 200, 401, 'User did not exist')
     } else {
         responseData(res, { user: userSerialize(user[0].dataValues) })
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body
+    const user = await findUserById(req.uid)
+
+    if (!user) {
+        responseError(res, 200, 401, 'User did not exist')
+    } else {
+        user.isCorrectPassword(R.toString(currentPassword), (err, same) => {
+            if (err) {
+                responseError(res, 500, 500, err)
+            } else if (!same) {
+                responseError(res, 200, 401, 'Incorrect password')
+            } else {
+                updatePassword(res, req.uid, newPassword)
+            }
+        })
+    }
+}
+
+const updatePassword = async (res, uid, newPassword) => {
+    let encryptPassword = newPassword
+
+    await bcrypt.hash(R.toString(newPassword), 10)
+        .then(hash => {
+            console.log(hash)
+            encryptPassword = hash
+        }).catch(err => {
+            console.log(err)
+            throw new Error()
+        })
+
+    const [result, updatedUser] = await updateUser(uid, { password: encryptPassword })
+
+    if (result == 0) {
+        responseError(res, 200, 401, 'Update password was failed')
+    } else {
+        responseData(res, { user: userSerialize(updatedUser[0].dataValues) })
     }
 }
