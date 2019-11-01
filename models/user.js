@@ -47,8 +47,6 @@ const User = sequelizeDb.define('users', {
     updatedAt: {
         type: sequelize.DATE
     }
-}, {
-    freezeTableName: true
 })
 
 User.prototype.isCorrectPassword = function(password, callback) {
