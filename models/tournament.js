@@ -1,7 +1,5 @@
 const sequelize = require('sequelize')
 const sequelizeDb = require('./sequelize')
-const User = require('./user')
-const Category = require('./category')
 
 const Tournament = sequelizeDb.define('tournaments', {
     name: {
@@ -18,16 +16,12 @@ const Tournament = sequelizeDb.define('tournaments', {
         type: sequelize.INTEGER,
         allowNull: false
     },
-    mainImage: {
-        type: sequelize.BLOB('long')
+    mainImageUrl: {
+        type: sequelize.STRING
     },
     userId: {
       type: sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: 'id'
-      }
+      allowNull: false
     },
     categoryId: {
       type: sequelize.INTEGER,
@@ -41,18 +35,6 @@ const Tournament = sequelizeDb.define('tournaments', {
     }
 }, {
     freezeTableName: true
-})
-
-User.hasMany(Tournament, { as: 'tournaments'})
-Category.hasMany(Tournament, { as: 'tournaments' })
-Tournament.belongsTo(User, {
-  as: 'organizer',
-  foreignKey: 'userId'
-})
-
-Tournament.belongsTo(Category, {
-  as: 'category',
-  foreignKey: 'categoryId'
 })
 
 module.exports = Tournament

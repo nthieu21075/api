@@ -1,4 +1,4 @@
-const User = require('../../models/user')
+const { User } = require('../../models/models')
 
 exports.findUserByEmail = (email) => User.findOne({ where: { email: email }, include: 'tournaments' })
 exports.findUserById = (id) => User.findOne({ where: { id: id } })

@@ -38,8 +38,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      mainImage: {
-        type: Sequelize.BLOB('long')
+      mainImageUrl: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

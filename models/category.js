@@ -7,8 +7,8 @@ const Category = sequelizeDb.define('categories', {
         unique: true,
         allowNull: false
     },
-    image: {
-        type: sequelize.BLOB('long'),
+    imageUrl: {
+        type: sequelize.STRING
     },
     createdAt: {
         type: sequelize.DATE

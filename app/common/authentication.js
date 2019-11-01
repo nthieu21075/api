@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken')
 const R = require('ramda')
-const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { findUserByEmail, findOrCreate } = require('../queries/user_query')
 const { userSerialize } = require('../response_format/user')

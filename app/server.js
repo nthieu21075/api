@@ -9,6 +9,7 @@ const routes = require('./routes/routes')
 const app = express()
 const port = process.env.PORT || 8000
 
+app.use(express.static('public'))
 app.use(cors())
 app.use(cookieParser())
 app.use(bodyParser.json())
