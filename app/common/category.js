@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const R = require('ramda')
 const { responseData, responseError } = require('../helpers/response')
 const { categoriesSerializer } = require('../response_format/category')
