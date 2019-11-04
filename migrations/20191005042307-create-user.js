@@ -15,7 +15,11 @@ module.exports = {
                 type: Sequelize.STRING
             },
             email: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                unique: { args: true, msg: "Email already exists" },
+                validate: {
+                    isEmail : true
+                }
             },
             createdAt: {
                 allowNull: false,
@@ -28,6 +32,6 @@ module.exports = {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable('Users');
+        return queryInterface.dropTable('users');
     }
 };

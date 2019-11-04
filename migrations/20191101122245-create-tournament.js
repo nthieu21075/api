@@ -28,6 +28,10 @@ module.exports = {
           key: 'id'
         }
       },
+      publish: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       shortDescription: {
         type: Sequelize.STRING
       },
@@ -41,6 +45,14 @@ module.exports = {
       mainImageUrl: {
         type: Sequelize.STRING
       },
+      startDate: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      endDate: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -52,6 +64,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Tournaments');
+    return queryInterface.dropTable('tournaments');
   }
 };

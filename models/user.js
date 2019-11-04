@@ -11,7 +11,7 @@ const User = sequelizeDb.define('users', {
     email: {
         type: sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: { args: true, msg: "Email already exists" },
         validate: {
             isEmail : true
         }
@@ -48,7 +48,13 @@ const User = sequelizeDb.define('users', {
         type: sequelize.DATE
     }
 }, {
-    freezeTableName: true
+    freezeTableName: true,
+    indexes: [
+      {
+        fields: ['email, organizerName'],
+        unique: true
+      }
+    ]
 })
 
 User.prototype.isCorrectPassword = function(password, callback) {

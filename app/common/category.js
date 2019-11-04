@@ -5,13 +5,12 @@ const { getAll, findOrCreate } = require('../queries/category_query')
 
 exports.category = async (req, res) => {
     const categories  = await getAll()
-    console.log(categories)
     responseData(res, { categories: categoriesSerializer(categories) })
 }
 
 exports.createCategory = async (req, res) => {
     const { name } = req.body
-    const filePath = R.replace('public', '', req.file.path)
+    const filePath = req.file ? R.replace('public', '', req.file.path) : ''
     const [category, created]  = await findOrCreate({ name: name }, { imageUrl: filePath })
 
     if (!created) {

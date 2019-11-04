@@ -4,6 +4,6 @@ const withAuth = require('../../middlewares/middleware')
 const { upload } = require('../../helpers/uploader')
 
 module.exports = app => {
-  app.post('/api/categories', withAuth, asyncMiddleware(category))
+  app.get('/api/categories', withAuth, asyncMiddleware(category))
   app.post('/api/category/create', withAuth, upload.single('image'), asyncMiddleware(createCategory))
 }

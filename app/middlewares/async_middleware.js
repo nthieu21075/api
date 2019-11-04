@@ -4,17 +4,17 @@ const R = require('ramda')
 
 exports.asyncMiddleware = fn => (req, res) => {
     Promise.resolve(fn(req, res)).catch((err) => {
-        responseError(res, 500, 500, getValidationMessage(err))
+        responseError(res, 200, 500, getValidationMessage(err))
     })
 }
 
 const getValidationMessage = (err) => {
     let messages = {}
+    console.log('----ERROR----')
     console.log(err)
     if (err instanceof Sequelize.ValidationError) {
         err.errors.forEach((error) => {
             let message
-
             switch (error.validatorKey) {
                 case 'isEmail':
                     message = 'Please enter a valid email';

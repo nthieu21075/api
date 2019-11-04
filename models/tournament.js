@@ -20,12 +20,24 @@ const Tournament = sequelizeDb.define('tournaments', {
         type: sequelize.STRING
     },
     userId: {
-      type: sequelize.INTEGER,
-      allowNull: false
+        type: sequelize.INTEGER,
+        allowNull: false
+    },
+    publish: {
+        type: sequelize.BOOLEAN,
+        defaultValue: false
     },
     categoryId: {
-      type: sequelize.INTEGER,
-      allowNull: false
+        type: sequelize.INTEGER,
+        allowNull: false
+    },
+    startDate: {
+        type: sequelize.DATE,
+        allowNull: false
+    },
+    endDate: {
+        type: sequelize.DATE,
+        allowNull: false
     },
     createdAt: {
         type: sequelize.DATE
