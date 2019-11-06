@@ -29,7 +29,7 @@ TournamentTeam.belongsTo(Tournament, { foreignKey: 'tournamentId' })
 TournamentTeam.belongsTo(Team, { foreignKey: 'teamId' })
 
 Table.hasMany(TableResult, { onDelete: 'CASCADE' })
-TableResult.belongsTo(Table, { foreignKey: 'tableId' })
+TableResult.belongsTo(Table, { foreignKey: 'tableId', onDelete: 'CASCADE' })
 TableResult.belongsTo(Team, { through: TournamentTeam, foreignKey: 'tournamentTeamId' })
 
 Team.belongsTo(User, {

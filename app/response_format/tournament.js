@@ -31,8 +31,11 @@ const tournamentTableSerializer = (table) => {
     teams: R.map((tableResult) => {
       const obj = tableResult.get({plain: true})
       return {
-        name: obj.team.name,
-        logo: obj.team.logo,
+        key: obj.team.name + obj.team.id,
+        info: {
+          name: obj.team.name,
+          logo: obj.team.logo
+        },
         point: obj.point,
         win: obj.win,
         lose: obj.lose,

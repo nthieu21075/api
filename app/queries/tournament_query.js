@@ -23,9 +23,17 @@ exports.getTounamentTable = (tournamentId) => Table.findAll(
           }
         ]
       }
+    ],
+    order: [
+      [ 'name', 'ASC'],
+      [ {model: TableResult}, 'point', 'ASC']
     ]
   }
 )
+
+exports.createTounamentTable = (arrFields) => Table.bulkCreate(arrFields)
+exports.createTounamentTableResult = (arrFields) => TableResult.bulkCreate(arrFields)
+
 exports.getTounamentTeam = (tournamentId, excludeTournamentTeamIds) => TournamentTeam.findAll(
   { where:
     {
@@ -41,3 +49,15 @@ exports.getTounamentTeam = (tournamentId, excludeTournamentTeamIds) => Tournamen
 )
 
 exports.getTeamInTable = (tournamentId) => R.pluck('tournamentTeamId')(TableResult.findAll({ where: { tournamentId: tournamentId }, raw: true }))
+
+exports.destroyAllTableResult = (tournamentId) => TableResult.destroy({
+  where: {
+    tournamentId: tournamentId
+  }
+})
+
+exports.destroyAllTable = (tournamentId) => Table.destroy({
+  where: {
+    tournamentId: tournamentId
+  }
+})
