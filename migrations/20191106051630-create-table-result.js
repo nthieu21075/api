@@ -1,61 +1,56 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('tournaments', {
+    return queryInterface.createTable('table_results', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      tableId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'tables',
           key: 'id'
         }
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      categoryId: {
+      tournamentId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'categories',
+          model: 'tournaments',
           key: 'id'
         }
       },
-      publish: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      shortDescription: {
-        type: Sequelize.STRING
-      },
-      description: {
-        type: Sequelize.TEXT
-      },
-      team: {
+      tournamentTeamId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'tournament_teams',
+          key: 'id'
+        }
       },
-      teamOfTable: {
+      win: {
         type: Sequelize.INTEGER,
-        defaultValue: 4
+        defaultValue: 0,
+        allowNull: false
       },
-      mainImageUrl: {
-        type: Sequelize.STRING
+      lose: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false
       },
-      startDate: {
-        allowNull: false,
-        type: Sequelize.DATE
+      wp: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false
       },
-      endDate: {
-        allowNull: false,
-        type: Sequelize.DATE
+      point: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -68,6 +63,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('tournaments');
+    return queryInterface.dropTable('table_results');
   }
 };

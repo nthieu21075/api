@@ -1,7 +1,7 @@
 const R = require('ramda')
 const { responseData, responseError } = require('../helpers/response')
-const { tournamentSerializer } = require('../response_format/tournament')
-const { create, getById, updateTournament } = require('../queries/tournament_query')
+const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer } = require('../response_format/tournament')
+const { create, getById, updateTournament, getTounamentTable, getTeamInTable, getTounamentTeam } = require('../queries/tournament_query')
 
 exports.create = async (req, res) => {
     const { name, shortDescription, description, team, categoryId, startDate, endDate } = req.body
@@ -23,8 +23,9 @@ exports.create = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-    const { name, shortDescription, description, team, categoryId, startDate, endDate, id, publish, removeImage } = req.body
+    const { name, shortDescription, description, team, categoryId, startDate, endDate, id, publish, removeImage, teamOfTable } = req.body
     let tournamentField = {
+        teamOfTable: teamOfTable,
         name: name,
         shortDescription: shortDescription,
         description: description,
@@ -52,7 +53,7 @@ exports.update = async (req, res) => {
     responseData(res, {})
 }
 
-exports.show = async (req, res) => {
+exports.basicInfo = async (req, res) => {
     const { id } = req.params
     const tournament = await getById(id)
 
@@ -61,4 +62,24 @@ exports.show = async (req, res) => {
     }
 
     responseData(res, tournamentSerializer(tournament))
+}
+
+exports.teamManagement = async (req, res) => {
+    const { id } = req.params
+    const tournament = await getById(id)
+
+    console.log(tournament)
+
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+
+    const tables = await getTounamentTable(id)
+    const teamIds = await getTeamInTable(id)
+    const teams = await getTounamentTeam(id, teamIds)
+
+    responseData(res, {
+        tables: listTournamentTableSerializer(tables),
+        teams: listTournamentTeamSerializer(teams)
+    })
 }

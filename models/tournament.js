@@ -10,11 +10,16 @@ const Tournament = sequelizeDb.define('tournaments', {
         type: sequelize.STRING
     },
     description: {
-        type: sequelize.STRING
+        type: sequelize.TEXT
     },
     team: {
         type: sequelize.INTEGER,
         allowNull: false
+    },
+    teamOfTable: {
+        type: sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 4
     },
     mainImageUrl: {
         type: sequelize.STRING

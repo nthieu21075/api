@@ -4,3 +4,15 @@ Migrate Databse: yarn sequelize-cli db:migrate
 Rollback Migration: yarn sequelize-cli db:migrate:undo
 add table migration: yarn sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
 Add migration: yarn sequelize-cli migration:generate --name add-column-origanizer-name-and-address
+Seeder:
+  + yarn sequelize-cli seed:generate --name demo-user
+  + yarn sequelize-cli db:seed:all
+  + yarn sequelize-cli db:seed:undo
+  + yarn sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
+  + yarn sequelize-cli db:seed:undo:all
+
+
+yarn sequelize-cli db:drop
+yarn sequelize-cli db:create
+yarn sequelize-cli db:migrate
+yarn sequelize-cli db:seed:all
