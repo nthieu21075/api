@@ -14,7 +14,7 @@ exports.createCategory = async (req, res) => {
     const [category, created]  = await findOrCreate({ name: name }, { imageUrl: filePath })
 
     if (!created) {
-       return responseError(res, 200, 401, 'Category is exsited')
+       return responseError(res, 200, 409, 'Category is exsited')
     }
 
     responseData(res, {})

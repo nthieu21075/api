@@ -13,7 +13,7 @@ exports.updateProfile = async (req, res) => {
     )
 
     if (result == 0) {
-        responseError(res, 200, 401, 'User did not exist')
+        responseError(res, 200, 404, 'User did not exist')
     } else {
         responseData(res, { user: userSerialize(user[0].dataValues) })
     }
@@ -24,13 +24,13 @@ exports.updatePassword = async (req, res) => {
     const user = await findUserById(req.uid)
 
     if (!user) {
-        responseError(res, 200, 401, 'User did not exist')
+        responseError(res, 200, 404, 'User did not exist')
     } else {
         user.isCorrectPassword(R.toString(currentPassword), (err, same) => {
             if (err) {
                 responseError(res, 500, 500, err)
             } else if (!same) {
-                responseError(res, 200, 401, 'Incorrect password')
+                responseError(res, 200, 409, 'Incorrect password')
             } else {
                 updatePassword(res, req.uid, newPassword)
             }
@@ -53,7 +53,7 @@ const updatePassword = async (res, uid, newPassword) => {
     const [result, updatedUser] = await updateUser(uid, { password: encryptPassword })
 
     if (result == 0) {
-        responseError(res, 200, 401, 'Update password was failed')
+        responseError(res, 200, 409, 'Update password was failed')
     } else {
         responseData(res, { user: userSerialize(updatedUser[0].dataValues) })
     }

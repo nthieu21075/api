@@ -46,7 +46,7 @@ exports.update = async (req, res) => {
     const [result, tournament] = await updateTournament(id, tournamentField)
 
     if (result == 0) {
-        return responseError(res, 200, 401, 'Tournament did not exist')
+        return responseError(res, 200, 404, 'Tournament did not exist')
     }
 
     responseData(res, {})

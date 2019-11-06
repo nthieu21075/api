@@ -9,13 +9,13 @@ exports.login = async (req, res) => {
     const user  = await findUserByEmail(email)
 
     if (!user) {
-        responseError(res, 200, 401, 'User did not exist')
+        responseError(res, 200, 409, 'User did not exist')
     } else {
         user.isCorrectPassword(R.toString(password), (err, same) => {
             if (err) {
-                responseError(res, 500, 500, err)
+                responseError(res, 200, 500, err)
             } else if (!same) {
-                responseError(res, 200, 401, 'Incorrect password')
+                responseError(res, 200, 409, 'Incorrect password')
             } else {
                 const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '5h' })
 
@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
     const [user, created] = await findOrCreate({ email: email }, { password: password, name: name })
 
     if (!created) {
-       return responseError(res, 200, 401, 'Email is exsited')
+       return responseError(res, 200, 409, 'Email is exsited')
     }
     const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '5h' })
 
