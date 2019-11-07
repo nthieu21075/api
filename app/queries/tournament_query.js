@@ -31,8 +31,22 @@ exports.getTounamentTable = (tournamentId) => Table.findAll(
   }
 )
 
-exports.createTounamentTable = (arrFields) => Table.bulkCreate(arrFields)
-exports.createTounamentTableResult = (arrFields) => TableResult.bulkCreate(arrFields)
+exports.createTournamentTable = (arrFields) => Table.bulkCreate(arrFields)
+exports.createTournamentTableResult = (arrFields) => TableResult.bulkCreate(arrFields)
+exports.createTournamentTeam = (arrFields) => TournamentTeam.bulkCreate(arrFields)
+
+exports.getTounamentTeamById = (ids) => TournamentTeam.findAll(
+  { where:
+    {
+      id: {
+        [Op.in]: ids
+      }
+    },
+    include: [
+      { model: Team }
+    ]
+  }
+)
 
 exports.getTounamentTeam = (tournamentId, excludeTournamentTeamIds) => TournamentTeam.findAll(
   { where:
@@ -61,3 +75,14 @@ exports.destroyAllTable = (tournamentId) => Table.destroy({
     tournamentId: tournamentId
   }
 })
+
+exports.getAvailableTeam = (tournamentId, categoryId) => Team.findAll(
+  { where: {
+      categoryId: categoryId
+    },
+    include: [{ model: TournamentTeam }],
+    order: [
+      [ 'name', 'ASC']
+    ]
+  }
+)

@@ -31,7 +31,9 @@ const tournamentTableSerializer = (table) => {
     teams: R.map((tableResult) => {
       const obj = tableResult.get({plain: true})
       return {
+        tournamentTeamId: obj.tournamentTeamId,
         key: obj.team.name + obj.team.id,
+        teamId: obj.team.id,
         info: {
           name: obj.team.name,
           logo: obj.team.logo
@@ -48,6 +50,7 @@ const tournamentTableSerializer = (table) => {
 const tournamentTeamSerializer = (tournamentTeam) => {
   const obj = tournamentTeam.dataValues.team.dataValues
   return {
+    id: obj.id,
     name: obj.name,
     logo: obj.logo
   }
@@ -61,4 +64,11 @@ exports.listTournamentTableSerializer = R.map(tournamentTableSerializer)
 
 exports.tournamentTeamSerializer = tournamentTeamSerializer
 exports.listTournamentTeamSerializer = R.map(tournamentTeamSerializer)
+exports.availableTeamSerializer = R.map((team) => {
+  return {
+    id: team.id,
+    name: team.name,
+    logo: team.logo
+  }
+})
 

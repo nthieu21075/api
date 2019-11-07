@@ -1,10 +1,11 @@
 const R = require('ramda')
 const _ = require('lodash')
 const { responseData, responseError } = require('../helpers/response')
-const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer } = require('../response_format/tournament')
+const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer } = require('../response_format/tournament')
 const { create,getById, updateTournament, getTounamentTable,
-    getTeamInTable, getTounamentTeam, destroyAllTableResult, createTounamentTable, destroyAllTable,
-    createTounamentTableResult
+    getTeamInTable, getTounamentTeam, destroyAllTableResult, createTournamentTable, destroyAllTable,
+    createTournamentTableResult, getAvailableTeam, createTournamentTeam,
+    getTounamentTeamById
 } = require('../queries/tournament_query')
 
 const alphabet = R.split('', 'abcdefghijklmnopqrstuvwxyz')
@@ -106,7 +107,7 @@ exports.generateTable = async (req, res) => {
       tournamentId: id
     }), R.times(R.identity, tableNumber))
 
-    const newTable = await createTounamentTable(tableData)
+    const newTable = await createTournamentTable(tableData)
     const teams = await getTounamentTeam(id, [])
     const teamIds = _.shuffle(R.map((team) => team.dataValues.id)(teams))
     const teamInTable = R.splitEvery(teamIds.length / tableNumber, teamIds)
@@ -121,7 +122,7 @@ exports.generateTable = async (req, res) => {
         }))(teamInTable[index])
     })
 
-    await createTounamentTableResult(R.flatten(tounamentTableResultData))
+    await createTournamentTableResult(R.flatten(tounamentTableResultData))
 
     const tables = await getTounamentTable(id)
 
@@ -129,4 +130,43 @@ exports.generateTable = async (req, res) => {
         tables: listTournamentTableSerializer(tables),
         teams: []
     })
+}
+
+exports.availableTeam = async (req, res) => {
+    const { id, categoryId } = req.params
+    const tournament = await getById(id)
+
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+
+    const data = R.filter((data) => {
+        const obj = data.dataValues
+        if (obj.tournament_teams.length == 0) {
+            return true
+        } else {
+            return false
+        }
+    }, await getAvailableTeam(id, categoryId))
+
+    responseData(res, availableTeamSerializer(data))
+}
+
+exports.addTeam = async (req, res) => {
+    const { id, teamIds } = req.body
+    const tournament = await getById(id)
+
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+
+    const teamData = R.map((teamId) => ({
+      teamId: teamId,
+      tournamentId: id
+    }), teamIds)
+
+    const tournamentTeamIds = R.map((team) => team.id)(await createTournamentTeam(teamData))
+    const teams = await getTounamentTeamById(tournamentTeamIds)
+
+    responseData(res, listTournamentTeamSerializer(teams))
 }
