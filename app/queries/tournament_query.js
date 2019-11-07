@@ -19,7 +19,12 @@ exports.getTounamentTable = (tournamentId) => Table.findAll(
         model: TableResult,
         include: [
           {
-            model: Team
+            model: TournamentTeam,
+            include: [
+              {
+                model: Team
+              }
+            ]
           }
         ]
       }

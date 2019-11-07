@@ -50,13 +50,14 @@ exports.update = async (req, res) => {
         tournamentField = R.merge(tournamentField, { mainImageUrl: '' })
     }
 
-    const [result, tournament] = await updateTournament(id, tournamentField)
+    const [result, _] = await updateTournament(id, tournamentField)
 
     if (result == 0) {
         return responseError(res, 200, 404, 'Tournament did not exist')
     }
 
-    responseData(res, {})
+    const tournament = await getById(id)
+    responseData(res, tournamentSerializer(tournament))
 }
 
 exports.basicInfo = async (req, res) => {
@@ -110,7 +111,7 @@ exports.generateTable = async (req, res) => {
     const teams = await getTounamentTeam(id, [])
     const teamIds = _.shuffle(R.map((team) => team.dataValues.id)(teams))
     const teamInTable = R.splitEvery(teamIds.length / tableNumber, teamIds)
-    console.log(teamInTable)
+
     const tounamentTableResultData = _.map(newTable, (table, index) => {
         const data = table.dataValues
 
@@ -180,4 +181,33 @@ exports.removeTeam = async (req, res) => {
     await destroyTournamentTeam(tournamentTeamIds)
 
     responseData(res, {})
+}
+
+
+exports.addTeamToTable = async (req, res) => {
+    const { id, teamIds, tableId } = req.body
+    const tournament = await getById(id)
+
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+
+
+    const tounamentTableResultData = R.map((teamId) => ({
+        tableId: tableId,
+        tournamentId: id,
+        tournamentTeamId: teamId
+    }))(teamIds)
+
+    await createTournamentTableResult(R.flatten(tounamentTableResultData))
+
+    const tables = await getTounamentTable(id)
+    const teams = await getTounamentTeam(id, await getTeamInTable(id))
+
+    console.log(teams)
+
+    responseData(res, {
+        tables: listTournamentTableSerializer(tables),
+        teams: listTournamentTeamSerializer(teams)
+    })
 }
