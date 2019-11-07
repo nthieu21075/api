@@ -1,4 +1,4 @@
-const { create, basicInfo, update, teamManagement, generateTable, availableTeam, addTeam, removeTeam, addTeamToTable } = require('../../organizers/tournaments')
+const { create, basicInfo, update, teamManagement, generateTable, availableTeam, addTeam, removeTeam, addTeamToTable, removeTeamToTable } = require('../../organizers/tournaments')
 const { asyncMiddleware } = require('../../middlewares/async_middleware')
 const withAuth = require('../../middlewares/middleware')
 const { upload } = require('../../helpers/uploader')
@@ -11,6 +11,7 @@ module.exports = app => {
   app.post('/api/organizer/tournament/remove-team', withAuth, asyncMiddleware(removeTeam))
 
   app.post('/api/organizer/tournament/add-team-to-table', withAuth, asyncMiddleware(addTeamToTable))
+  app.post('/api/organizer/tournament/remove-team-to-table', withAuth, asyncMiddleware(removeTeamToTable))
 
   app.post('/api/organizer/tournament/generate-table', withAuth, asyncMiddleware(generateTable))
   app.post('/api/organizer/tournament/create', withAuth, upload.single('image'), asyncMiddleware(create))

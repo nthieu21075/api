@@ -83,6 +83,13 @@ exports.destroyTournamentTeam = (tournamentIds) => TournamentTeam.destroy({
   }
 })
 
+exports.destroyTableResult = (tournamentId, tableResultId) => TableResult.destroy({
+  where: {
+    id: tableResultId,
+    tournamentId: tournamentId
+  }
+})
+
 exports.destroyAllTable = (tournamentId) => Table.destroy({
   where: {
     tournamentId: tournamentId

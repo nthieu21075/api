@@ -33,6 +33,7 @@ const tournamentTableSerializer = (table) => {
       const obj = tableResult.get({plain: true})
       const team = obj.tournament_team.team
       return {
+        tableResultId: obj.id,
         tournamentTeamId: obj.tournamentTeamId,
         key: team.name + team.id,
         teamId: team.id,
