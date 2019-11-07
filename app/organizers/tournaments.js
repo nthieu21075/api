@@ -4,8 +4,7 @@ const { responseData, responseError } = require('../helpers/response')
 const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer } = require('../response_format/tournament')
 const { create,getById, updateTournament, getTounamentTable,
     getTeamInTable, getTounamentTeam, destroyAllTableResult, createTournamentTable, destroyAllTable,
-    createTournamentTableResult, getAvailableTeam, createTournamentTeam,
-    getTounamentTeamById
+    createTournamentTableResult, getAvailableTeam, createTournamentTeam, destroyTournamentTeam, getTounamentTeamById
 } = require('../queries/tournament_query')
 
 const alphabet = R.split('', 'abcdefghijklmnopqrstuvwxyz')
@@ -169,4 +168,16 @@ exports.addTeam = async (req, res) => {
     const teams = await getTounamentTeamById(tournamentTeamIds)
 
     responseData(res, listTournamentTeamSerializer(teams))
+}
+
+exports.removeTeam = async (req, res) => {
+    const { id, tournamentTeamIds } = req.body
+    const tournament = await getById(id)
+
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+    await destroyTournamentTeam(tournamentTeamIds)
+
+    responseData(res, {})
 }

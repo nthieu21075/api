@@ -50,6 +50,7 @@ const tournamentTableSerializer = (table) => {
 const tournamentTeamSerializer = (tournamentTeam) => {
   const obj = tournamentTeam.dataValues.team.dataValues
   return {
+    tournamentTeamId: tournamentTeam.dataValues.id,
     id: obj.id,
     name: obj.name,
     logo: obj.logo
