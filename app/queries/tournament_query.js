@@ -106,3 +106,5 @@ exports.getAvailableTeam = (tournamentId, categoryId) => Team.findAll(
     ]
   }
 )
+
+exports.updateTableResult = (queryField, fields) => TableResult.update(fields, { returning: true, where: queryField })
