@@ -77,3 +77,10 @@ exports.availableTeamSerializer = R.map((team) => {
   }
 })
 
+exports.listTournamentSerializer = R.map((tournament) => ({
+    id: tournament.id,
+    src: tournament.mainImageUrl,
+    title: tournament.name,
+    description: tournament.shortDescription,
+    organizer: tournament['organizer.name']
+}))

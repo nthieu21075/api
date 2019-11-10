@@ -108,3 +108,15 @@ exports.getAvailableTeam = (tournamentId, categoryId) => Team.findAll(
 )
 
 exports.updateTableResult = (queryField, fields) => TableResult.update(fields, { returning: true, where: queryField })
+
+exports.getTournaments = (uid) => Tournament.findAll(
+  { where: {
+      userId: uid
+    },
+    include: 'organizer',
+    order: [
+      [ 'createdAt', 'DESC']
+    ],
+    raw: true
+  }
+)

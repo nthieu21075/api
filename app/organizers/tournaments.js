@@ -1,11 +1,11 @@
 const R = require('ramda')
 const _ = require('lodash')
 const { responseData, responseError } = require('../helpers/response')
-const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer } = require('../response_format/tournament')
+const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer, listTournamentSerializer } = require('../response_format/tournament')
 const { create,getById, updateTournament, getTounamentTable,
     getTeamInTable, getTounamentTeam, destroyAllTableResult, createTournamentTable, destroyAllTable,
     createTournamentTableResult, getAvailableTeam, createTournamentTeam, destroyTournamentTeam, getTounamentTeamById,
-    destroyTableResult, updateTableResult
+    destroyTableResult, updateTableResult, getTournaments
 } = require('../queries/tournament_query')
 
 const alphabet = R.split('', 'abcdefghijklmnopqrstuvwxyz')
@@ -250,5 +250,11 @@ exports.moveTeamToTable = async (req, res) => {
     responseData(res, {
         tables: listTournamentTableSerializer(tables)
     })
+}
+
+exports.listTournament = async (req, res) => {
+    const tournaments = await getTournaments(req.uid)
+
+    responseData(res, listTournamentSerializer(tournaments))
 }
 
