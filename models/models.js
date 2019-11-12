@@ -21,8 +21,8 @@ Tournament.belongsTo(Category, {
 
 Table.hasMany(Match, { onDelete: 'CASCADE' })
 Match.belongsTo(Table, { foreignKey: 'tableId' })
-Match.belongsTo(TournamentTeam, { foreignKey: 'homeTournamentTeamId' })
-Match.belongsTo(TournamentTeam, { foreignKey: 'visitorTournamentTeamId' })
+Match.belongsTo(Team, { through: TournamentTeam, as: 'homeTeam', foreignKey: 'homeTournamentTeamId' })
+Match.belongsTo(Team, { through: TournamentTeam, as: 'visitorTeam', foreignKey: 'visitorTournamentTeamId' })
 
 Tournament.hasMany(Table, { onDelete: 'CASCADE' })
 Table.belongsTo(Tournament, { foreignKey: 'tournamentId' })

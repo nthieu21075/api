@@ -23,11 +23,7 @@ exports.getMatchOfTournament = (tournamentId) => Tournament.findOne({
       include: [
         {
           model: Match,
-          include: [
-            {
-              model: TournamentTeam
-            }
-          ]
+          include: [ 'homeTeam', 'visitorTeam' ]
         }
       ]
     }

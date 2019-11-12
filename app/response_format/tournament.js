@@ -8,6 +8,7 @@ const tournamentSerializer = (tournament) => {
       imageUrl: tournament.mainImageUrl,
       shortDescription: tournament.shortDescription,
       description: tournament.description,
+      scheduleType: tournament.scheduleType,
       category: {
         id: tournament['category.id'],
         name: tournament['category.name'],

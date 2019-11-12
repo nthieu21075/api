@@ -1,14 +1,13 @@
 const R = require('ramda')
 const _ = require('lodash')
 const { responseData, responseError } = require('../helpers/response')
-const {} = require('../response_format/tournament')
+const { matchesSerializer } = require('../response_format/schedule')
 const { getById, updateTournament, getTounamentTable } = require('../queries/tournament_query')
 const { create: createMatch, getMatchOfTournament, destroyAllMatch, getTableId } = require('../queries/match_query')
 const async = require("async")
 
 exports.generateSchedule = async (req, res) => {
     const { id, scheduleType } = req.body
-    console.log(req.body)
     const tournament = await getById(id)
 
     if (!tournament) {
@@ -38,13 +37,23 @@ exports.generateSchedule = async (req, res) => {
 
 
     await createMatch(matchesData)
-    const matches = await getMatchOfTournament(id).get({ plain: true })
+    const matches = await getMatchOfTournament(id)
 
+    responseData(res, matchesSerializer(matches.get({ plain: true }).tables))
+}
 
+exports.getSchedule =  async (req, res) => {
+    const { id } = req.params
 
-    console.log(matches.tables[0].matches)
+    const tournament = await getById(id)
 
-    responseData(res, {})
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+
+    const matches = await getMatchOfTournament(id)
+
+    responseData(res, matchesSerializer(matches.get({ plain: true }).tables))
 }
 
 const assignTeamToMatch = (teams, matches)  => {
