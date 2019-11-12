@@ -21,6 +21,9 @@ const Tournament = sequelizeDb.define('tournaments', {
         allowNull: false,
         defaultValue: 4
     },
+    scheduleType: {
+        type: sequelize.STRING
+    },
     mainImageUrl: {
         type: sequelize.STRING
     },

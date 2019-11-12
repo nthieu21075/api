@@ -254,7 +254,6 @@ exports.moveTeamToTable = async (req, res) => {
 
 exports.listTournament = async (req, res) => {
     const tournaments = await getTournaments(req.uid)
-
     responseData(res, listTournamentSerializer(tournaments))
 }
 

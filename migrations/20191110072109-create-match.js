@@ -21,7 +21,6 @@ module.exports = {
       },
       homeTournamentTeamId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'tournament_teams',
           key: 'id'
@@ -29,7 +28,6 @@ module.exports = {
       },
       visitorTournamentTeamId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'tournament_teams',
           key: 'id'
@@ -55,12 +53,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      rootMatchId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'matches',
-          key: 'id'
-        }
+      rootIndex: {
+        type: Sequelize.INTEGER
+      },
+      index: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

@@ -16,6 +16,9 @@ const Match = sequelizeDb.define('matches', {
         defaultValue: false,
         allowNull: false
     },
+    scheduled: {
+        type: sequelize.DATE
+    },
     homeScore: {
         type: sequelize.INTEGER
     },
@@ -24,19 +27,19 @@ const Match = sequelizeDb.define('matches', {
     },
     tableId: {
         type: sequelize.INTEGER,
-        allowNull: false
     },
-    rootMatchId: {
+    rootIndex: {
+        type: sequelize.INTEGER,
+    },
+    index: {
         type: sequelize.INTEGER,
         allowNull: false
     },
     visitorTournamentTeamId: {
         type: sequelize.INTEGER,
-        allowNull: false
     },
     homeTournamentTeamId: {
         type: sequelize.INTEGER,
-        allowNull: false
     },
     createdAt: {
         type: sequelize.DATE
