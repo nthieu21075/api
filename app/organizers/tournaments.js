@@ -7,6 +7,7 @@ const { create,getById, updateTournament, getTounamentTable,
     createTournamentTableResult, getAvailableTeam, createTournamentTeam, destroyTournamentTeam, getTounamentTeamById,
     destroyTableResult, updateTableResult, getTournaments
 } = require('../queries/tournament_query')
+const { destroyAllMatch, getTableId } = require('../queries/match_query')
 
 const alphabet = R.split('', 'abcdefghijklmnopqrstuvwxyz')
 
@@ -98,6 +99,8 @@ exports.generateTable = async (req, res) => {
         responseError(res, 200, 400, 'Tournament not found')
     }
 
+    const tableIds = await getTableId(id)
+    await destroyAllMatch(tableIds)
     await destroyAllTableResult(id)
     await destroyAllTable(id)
 
@@ -253,7 +256,7 @@ exports.moveTeamToTable = async (req, res) => {
 }
 
 exports.listTournament = async (req, res) => {
-    const tournaments = await getTournaments(req.uid)
+    const tournaments = await getTournaments({ userId: req.uid })
     responseData(res, listTournamentSerializer(tournaments))
 }
 
