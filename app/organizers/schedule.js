@@ -32,7 +32,7 @@ exports.generateSchedule = async (req, res) => {
             return { id: tournamentTeam.id }
         })(tableResults)
         const matches = singleElimination(tableResults.length, table.dataValues.id)
-        matchesData = assignTeamToMatch(teams, matches)
+        matchesData = R.concat(matchesData, assignTeamToMatch(teams, matches))
     }, tables))
 
 
