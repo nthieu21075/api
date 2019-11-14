@@ -29,3 +29,24 @@ exports.getMatchOfTournament = (tournamentId) => Tournament.findOne({
     }
   ]
 })
+
+exports.removeTeamOutOfMatch = (tournamentIds) => Match.update({
+  visitorTournamentTeamId: null,
+  homeTournamentTeamId: null
+},{
+  where: {
+    [Op.or]: [
+      {
+        visitorTournamentTeamId: {
+          [Op.in]: tournamentIds
+        }
+      },
+      {
+        homeTournamentTeamId: {
+          [Op.in]: tournamentIds
+        }
+      }
+    ]
+  },
+  raw: true
+})

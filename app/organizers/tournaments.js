@@ -7,7 +7,7 @@ const { create,getById, updateTournament, getTounamentTable,
     createTournamentTableResult, getAvailableTeam, createTournamentTeam, destroyTournamentTeam, getTounamentTeamById,
     destroyTableResult, updateTableResult, getTournaments
 } = require('../queries/tournament_query')
-const { destroyAllMatch, getTableId } = require('../queries/match_query')
+const { destroyAllMatch, getTableId, removeTeamOutOfMatch } = require('../queries/match_query')
 
 const alphabet = R.split('', 'abcdefghijklmnopqrstuvwxyz')
 
@@ -182,6 +182,8 @@ exports.removeTeam = async (req, res) => {
     if (!tournament) {
         responseError(res, 200, 400, 'Tournament not found')
     }
+
+    await removeTeamOutOfMatch(tournamentTeamIds)
     await destroyTournamentTeam(tournamentTeamIds)
 
     responseData(res, {})
