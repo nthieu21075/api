@@ -7,6 +7,8 @@ exports.getByfield = (fields) => Tournament.findAll({ where: fields, include: 'c
 
 exports.create = (fields) => Tournament.create(fields)
 
+exports.createTeam = (fields) => Team.create(fields)
+
 exports.getById = (id) => Tournament.findOne({ where: { id: id }, include: ['category'], raw: true })
 
 exports.updateTournament = (id, fields) => Tournament.update(fields, { returning: true, where: { id: id } })
@@ -111,10 +113,25 @@ exports.updateTableResult = (queryField, fields) => TableResult.update(fields, {
 
 exports.getTournaments = (fields) => Tournament.findAll(
   { where: fields,
-    include: 'organizer',
+    include: [
+    'organizer',
+    {
+      model: TournamentTeam
+    }
+    ],
     order: [
       [ 'createdAt', 'DESC']
-    ],
-    raw: true
+    ]
+  }
+)
+
+exports.getUserTeam = (userId) => Team.findAll(
+  { where: {
+      userId: userId
+    },
+    include: [{ model: TournamentTeam }],
+    order: [
+      [ 'name', 'ASC']
+    ]
   }
 )

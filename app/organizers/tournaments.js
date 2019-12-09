@@ -151,7 +151,7 @@ exports.availableTeam = async (req, res) => {
         } else {
             return false
         }
-    }, await getAvailableTeam(id, categoryId))
+    }, await getAvailableTeam(categoryId))
 
     responseData(res, availableTeamSerializer(data))
 }

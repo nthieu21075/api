@@ -16,6 +16,7 @@ const tournamentSerializer = (tournament) => {
       },
       team: tournament.team,
       teamOfTable: tournament.teamOfTable,
+      categoryId: tournament.categoryId,
       publish: tournament.publish,
       startDate: tournament.startDate,
       endDate: tournament.endDate,
@@ -74,7 +75,8 @@ exports.availableTeamSerializer = R.map((team) => {
   return {
     id: team.id,
     name: team.name,
-    logo: team.logo
+    logo: team.logo,
+    categoryId: team.categoryId
   }
 })
 
@@ -83,5 +85,10 @@ exports.listTournamentSerializer = R.map((tournament) => ({
     src: tournament.mainImageUrl,
     title: tournament.name,
     description: tournament.shortDescription,
-    organizer: tournament['organizer.name']
+    organizer: tournament.organizer.name,
+    startDate: tournament.startDate,
+    endDate: tournament.endDate,
+    team: tournament.team,
+    currentTeam: tournament.tournament_teams.length,
+    categoryId: tournament.categoryId
 }))
