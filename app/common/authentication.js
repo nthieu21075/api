@@ -3,6 +3,7 @@ const R = require('ramda')
 const { responseData, responseError } = require('../helpers/response')
 const { findUserByEmail, findOrCreate } = require('../queries/user_query')
 const { userSerialize } = require('../response_format/user')
+const { getUserTeam } = require('../queries/tournament_query')
 
 exports.login = async (req, res) => {
     const { email, password } = req.body
