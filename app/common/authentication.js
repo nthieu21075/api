@@ -67,6 +67,6 @@ exports.register = async (req, res) => {
 
 const userLoginData = async (res, user) => {
     const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '5h' })
-    const userTeam = await getUserTeam(user.uid)
+    const userTeam = await getUserTeam(user.id)
     responseData(res, { user: userSerialize(user.get({plain: true})), userTeam: userTeam }, true, token)
 }
