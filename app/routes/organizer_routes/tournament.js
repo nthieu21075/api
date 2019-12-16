@@ -1,10 +1,12 @@
 const { create, basicInfo, update, teamManagement, generateTable, availableTeam, addTeam, removeTeam, addTeamToTable, removeTeamToTable, moveTeamToTable, listTournament } = require('../../organizers/tournaments')
 const { generateSchedule, getSchedule } = require('../../organizers/schedule')
+const { pendingRequest } = require('../../organizers/pendingRequest')
 const { asyncMiddleware } = require('../../middlewares/async_middleware')
 const withAuth = require('../../middlewares/middleware')
 const { upload } = require('../../helpers/uploader')
 
 module.exports = app => {
+  app.get('/api/organizer/tournament/pending-request', withAuth, asyncMiddleware(pendingRequest))
   app.get('/api/organizer/tournament/basic-info/:id', withAuth, asyncMiddleware(basicInfo))
   app.get('/api/organizer/tournament/team-management-info/:id', withAuth, asyncMiddleware(teamManagement))
   app.get('/api/organizer/tournament/:id/available-team/:categoryId', withAuth, asyncMiddleware(availableTeam))

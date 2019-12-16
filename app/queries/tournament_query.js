@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const R = require('ramda')
-const { Tournament, TableResult, TournamentTeam, Table, Team } = require('../../models/models')
+const { Tournament, TableResult, TournamentTeam, Table, Team, User } = require('../../models/models')
 
 exports.getByfield = (fields) => Tournament.findAll({ where: fields, include: 'category', raw: true })
 
@@ -59,6 +59,7 @@ exports.getTounamentTeam = (tournamentId, excludeTournamentTeamIds) => Tournamen
   { where:
     {
       tournamentId: tournamentId,
+      status: 'approved',
       id: {
         [Op.notIn]: excludeTournamentTeamIds
       }
@@ -132,6 +133,24 @@ exports.getUserTeam = (userId) => Team.findAll(
     include: [{ model: TournamentTeam }],
     order: [
       [ 'name', 'ASC']
+    ]
+  }
+)
+
+exports.getPendingRequest = () => TournamentTeam.findAll(
+  { where:
+    {
+      status: 'pending',
+    },
+    include: [
+      {
+        model: Team,
+        include: [ 'own' ]
+      },
+      {
+        model: Tournament,
+        include: [ 'organizer' ]
+      }
     ]
   }
 )
