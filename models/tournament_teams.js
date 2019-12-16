@@ -10,6 +10,10 @@ const TournamentTeam = sequelizeDb.define('tournament_teams', {
         type: sequelize.INTEGER,
         allowNull: false
     },
+    status: {
+        type: sequelize.ENUM,
+        values: ['approved', 'canceled', 'pending']
+    },
     createdAt: {
         type: sequelize.DATE
     },

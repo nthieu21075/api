@@ -98,7 +98,7 @@ exports.destroyAllTable = (tournamentId) => Table.destroy({
   }
 })
 
-exports.getAvailableTeam = (tournamentId, categoryId) => Team.findAll(
+exports.getAvailableTeam = (categoryId) => Team.findAll(
   { where: {
       categoryId: categoryId
     },

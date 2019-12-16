@@ -138,6 +138,7 @@ exports.generateTable = async (req, res) => {
 
 exports.availableTeam = async (req, res) => {
     const { id, categoryId } = req.params
+
     const tournament = await getById(id)
 
     if (!tournament) {
@@ -166,7 +167,8 @@ exports.addTeam = async (req, res) => {
 
     const teamData = R.map((teamId) => ({
       teamId: teamId,
-      tournamentId: id
+      tournamentId: id,
+      status: 'approved'
     }), teamIds)
 
     const tournamentTeamIds = R.map((team) => team.id)(await createTournamentTeam(teamData))
@@ -185,8 +187,10 @@ exports.removeTeam = async (req, res) => {
 
     await removeTeamOutOfMatch(tournamentTeamIds)
     await destroyTournamentTeam(tournamentTeamIds)
+    const teamIds = await getTeamInTable(id)
+    const teams = await getTounamentTeam(id, teamIds)
 
-    responseData(res, {})
+    responseData(res, listTournamentTeamSerializer(teams))
 }
 
 
@@ -197,7 +201,6 @@ exports.addTeamToTable = async (req, res) => {
     if (!tournament) {
         responseError(res, 200, 400, 'Tournament not found')
     }
-
 
     const tounamentTableResultData = R.map((teamId) => ({
         tableId: tableId,
