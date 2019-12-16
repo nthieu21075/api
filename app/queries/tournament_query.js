@@ -154,3 +154,10 @@ exports.getPendingRequest = () => TournamentTeam.findAll(
     ]
   }
 )
+
+exports.updateTournamentTeam = (id, fields) => TournamentTeam.update(fields, {
+  where: {
+    id: id
+  },
+  raw: true
+})
