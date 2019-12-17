@@ -174,3 +174,24 @@ exports.updateTournamentTeam = (id, fields) => TournamentTeam.update(fields, {
   },
   raw: true
 })
+
+exports.getUserPendingRequest = (userId) => TournamentTeam.findAll(
+  { where:
+    {
+      status: 'pending',
+    },
+    include: [
+      {
+        model: Team,
+        include: [ 'own' ],
+        where: {
+          userId: userId
+        }
+      },
+      {
+        model: Tournament,
+        include: [ 'organizer' ]
+      }
+    ]
+  }
+)
