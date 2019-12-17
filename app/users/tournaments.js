@@ -4,7 +4,7 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const { responseData, responseError } = require('../helpers/response')
 const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer, listTournamentSerializer } = require('../response_format/tournament')
-const { getTournaments, createTeam, getUserTeam, createTournamentTeam } = require('../queries/tournament_query')
+const { getTournaments, createTeam, getUserTeam, createTournamentTeam, getUserTournamentTeam } = require('../queries/tournament_query')
 
 exports.listTournament = async (req, res) => {
     const { categoryId } = req.params
@@ -52,7 +52,8 @@ exports.createTeam = async (req, res) => {
     )
 
     const userTeam = await getUserTeam(req.uid)
-    responseData(res, userTeam)
+    const tournamentTeam = await getUserTournamentTeam(req.uid)
+    responseData(res, { team: userTeam, tournamentTeam: tournamentTeam })
 }
 
 exports.joinTeam = async (req, res) => {
@@ -66,5 +67,7 @@ exports.joinTeam = async (req, res) => {
     )
 
     const userTeam = await getUserTeam(req.uid)
-    responseData(res, userTeam)
+    const tournamentTeam = await getUserTournamentTeam(req.uid)
+
+    responseData(res, { team: userTeam, tournamentTeam: tournamentTeam })
 }

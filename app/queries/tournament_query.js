@@ -137,6 +137,19 @@ exports.getUserTeam = (userId) => Team.findAll(
   }
 )
 
+exports.getUserTournamentTeam = (userId) => TournamentTeam.findAll(
+  {
+    include: [
+      {
+        model: Team,
+        where: {
+          userId: userId
+        },
+      }
+    ]
+  }
+)
+
 exports.getPendingRequest = () => TournamentTeam.findAll(
   { where:
     {

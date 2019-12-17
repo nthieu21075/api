@@ -3,7 +3,7 @@ const R = require('ramda')
 const { responseData, responseError } = require('../helpers/response')
 const { findUserByEmail, findOrCreate } = require('../queries/user_query')
 const { userSerialize } = require('../response_format/user')
-const { getUserTeam } = require('../queries/tournament_query')
+const { getUserTeam, getUserTournamentTeam } = require('../queries/tournament_query')
 
 exports.login = async (req, res) => {
     const { email, password } = req.body
@@ -61,12 +61,18 @@ exports.register = async (req, res) => {
        return responseError(res, 200, 409, 'Email is exsited')
     }
     const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '5h' })
+    const userTeam = await getUserTeam(user.id)
+    const tournamentTeam = await getUserTournamentTeam(user.id)
 
-    responseData(res, { user: userSerialize(user.get({plain: true})) }, true, token)
+    responseData(res, { user: userSerialize(user.get({plain: true})), team: userTeam, tournamentTeam: tournamentTeam }, true, token)
 }
 
 const userLoginData = async (res, user) => {
     const token = jwt.sign({ uid: user.id }, process.env.JSON_WEB_TOKEN_SECRECT, { expiresIn: '5h' })
     const userTeam = await getUserTeam(user.id)
-    responseData(res, { user: userSerialize(user.get({plain: true})), userTeam: userTeam }, true, token)
+    const tournamentTeam = await getUserTournamentTeam(user.id)
+
+    console.log(tournamentTeam)
+
+    responseData(res, { user: userSerialize(user.get({plain: true})), team: userTeam, tournamentTeam: tournamentTeam }, true, token)
 }
