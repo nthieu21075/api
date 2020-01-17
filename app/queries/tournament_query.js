@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const R = require('ramda')
-const { Tournament, TableResult, TournamentTeam, Table, Team, User } = require('../../models/models')
+const { Tournament, TableResult, TournamentTeam, Table, Team, User, Match } = require('../../models/models')
 
 exports.getByfield = (fields) => Tournament.findAll({ where: fields, include: 'category', raw: true })
 
@@ -12,6 +12,45 @@ exports.createTeam = (fields) => Team.create(fields)
 exports.getById = (id) => Tournament.findOne({ where: { id: id }, include: ['category'], raw: true })
 
 exports.updateTournament = (id, fields) => Tournament.update(fields, { returning: true, where: { id: id } })
+
+exports.searchTournament = (keyword) => Tournament.findAll({
+  where: {
+    publish: true,
+    name: {
+      [Op.iLike]: `%${keyword}%`
+    }
+  }
+})
+
+exports.getTournament = (tournamentId) => Tournament.findOne(
+  {
+    where: { id: tournamentId, publish: true },
+    include: [
+      {
+        model: Table,
+        include: [
+          {
+            model: Match,
+            include: [ 'homeTeam', 'visitorTeam' ]
+          },
+          {
+            model: TableResult,
+            include: [
+              {
+                model: TournamentTeam,
+                include: [
+                  {
+                    model: Team
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+)
 
 exports.getTounamentTable = (tournamentId) => Table.findAll(
   { where:

@@ -4,7 +4,19 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const { responseData, responseError } = require('../helpers/response')
 const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer, listTournamentSerializer } = require('../response_format/tournament')
-const { getTournaments, createTeam, getUserTeam, createTournamentTeam, getUserTournamentTeam, getUserPendingRequest } = require('../queries/tournament_query')
+const { getTournaments, createTeam, getUserTeam, createTournamentTeam, getUserTournamentTeam, getUserPendingRequest, getTournament, searchTournament } = require('../queries/tournament_query')
+
+exports.tournamentDetail = async (req, res) => {
+    const { tournamentId } = req.params
+    const tournament = await getTournament(tournamentId)
+    responseData(res, tournament)
+}
+
+exports.searchTournament = async (req, res) => {
+    const { keyword } = req.params
+    const tournament = await searchTournament(keyword)
+    responseData(res, tournament)
+}
 
 exports.listTournament = async (req, res) => {
     const { categoryId } = req.params

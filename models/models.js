@@ -6,6 +6,8 @@ const Team = require('./team')
 const TournamentTeam = require('./tournament_teams')
 const TableResult = require('./tableresult')
 const Match = require('./match')
+const MatchResult = require('./matchresult')
+const TeamMember = require('./teammember')
 
 User.hasMany(Tournament, { as: 'tournaments' })
 Category.hasMany(Tournament, { as: 'tournaments' })
@@ -24,6 +26,9 @@ Match.belongsTo(Table, { foreignKey: 'tableId' })
 Match.belongsTo(Team, { through: TournamentTeam, as: 'homeTeam', foreignKey: 'homeTournamentTeamId' })
 Match.belongsTo(Team, { through: TournamentTeam, as: 'visitorTeam', foreignKey: 'visitorTournamentTeamId' })
 
+Match.hasMany(MatchResult, { onDelete: 'CASCADE' })
+MatchResult.belongsTo(Match, { foreignKey: 'matchId' })
+
 Tournament.hasMany(Table, { onDelete: 'CASCADE' })
 Table.belongsTo(Tournament, { foreignKey: 'tournamentId' })
 
@@ -40,6 +45,8 @@ TableResult.belongsTo(TournamentTeam, { foreignKey: 'tournamentTeamId' })
 TableResult.belongsTo(Team, { through: TournamentTeam, foreignKey: 'tournamentTeamId' })
 
 Team.hasMany(TournamentTeam, { onDelete: 'CASCADE' })
+Team.hasMany(TeamMember, { onDelete: 'CASCADE' })
+TeamMember.belongsTo(Team, { foreignKey: 'TeamId' })
 
 Team.belongsTo(User, {
   as: 'own',
@@ -59,5 +66,7 @@ module.exports = {
   Team,
   TournamentTeam,
   TableResult,
-  Match
+  Match,
+  MatchResult,
+  TeamMember
 }
