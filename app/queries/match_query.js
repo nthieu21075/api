@@ -30,6 +30,29 @@ exports.getMatchOfTournament = (tournamentId) => Tournament.findOne({
   ]
 })
 
+exports.getHappeningMatch = (fields) => Tournament.findAll({
+  where: fields,
+  include: [
+    {
+      model: Table,
+      include: [
+        {
+          model: Match,
+          where: {
+            homeTournamentTeamId: {
+              [Op.ne]: null
+            },
+            visitorTournamentTeamId: {
+              [Op.ne]: null
+            }
+          },
+          include: [ 'homeTeam', 'visitorTeam' ]
+        }
+      ]
+    }
+  ]
+})
+
 exports.removeTeamOutOfMatch = (tournamentIds) => Match.update({
   visitorTournamentTeamId: null,
   homeTournamentTeamId: null

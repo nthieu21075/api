@@ -13,14 +13,26 @@ exports.getById = (id) => Tournament.findOne({ where: { id: id }, include: ['cat
 
 exports.updateTournament = (id, fields) => Tournament.update(fields, { returning: true, where: { id: id } })
 
-exports.searchTournament = (keyword) => Tournament.findAll({
-  where: {
-    publish: true,
-    name: {
-      [Op.iLike]: `%${keyword}%`
-    }
+exports.searchTournament = (keyword, type) => {
+  if (type == 'organizer') {
+    return Tournament.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${keyword}%`
+        }
+      }
+    })
+  } else {
+    return Tournament.findAll({
+      where: {
+        publish: true,
+        name: {
+          [Op.iLike]: `%${keyword}%`
+        }
+      }
+    })
   }
-})
+}
 
 exports.getTournament = (tournamentId) => Tournament.findOne(
   {
@@ -164,6 +176,7 @@ exports.getTournaments = (fields) => Tournament.findAll(
     ]
   }
 )
+
 
 exports.getUserTeam = (userId) => Team.findAll(
   { where: {

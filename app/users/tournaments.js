@@ -13,8 +13,9 @@ exports.tournamentDetail = async (req, res) => {
 }
 
 exports.searchTournament = async (req, res) => {
-    const { keyword } = req.params
-    const tournament = await searchTournament(keyword)
+    const { keyword, type } = req.body
+    console.log(req.body)
+    const tournament = await searchTournament(keyword, type)
     responseData(res, tournament)
 }
 

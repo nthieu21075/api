@@ -10,7 +10,7 @@ module.exports = app => {
   app.get('/api/user/tournaments/:categoryId', asyncMiddleware(listTournament))
   app.get('/api/user/tournament-detail/:tournamentId', asyncMiddleware(tournamentDetail))
 
-  app.get('/api/user/search-tournament/:keyword', asyncMiddleware(searchTournament))
+  app.post('/api/user/search-tournament', asyncMiddleware(searchTournament))
 
   app.post('/api/user/create-team', withAuth, upload.single('logo'), asyncMiddleware(createTeam))
   app.post('/api/join-team', withAuth, asyncMiddleware(joinTeam))

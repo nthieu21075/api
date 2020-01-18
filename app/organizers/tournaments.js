@@ -1,5 +1,6 @@
 const R = require('ramda')
 const _ = require('lodash')
+const Op = require('sequelize').Op
 const { responseData, responseError } = require('../helpers/response')
 const { tournamentSerializer, listTournamentTableSerializer, listTournamentTeamSerializer, availableTeamSerializer, listTournamentSerializer } = require('../response_format/tournament')
 const { create,getById, updateTournament, getTounamentTable,
@@ -7,7 +8,7 @@ const { create,getById, updateTournament, getTounamentTable,
     createTournamentTableResult, getAvailableTeam, createTournamentTeam, destroyTournamentTeam, getTounamentTeamById,
     destroyTableResult, updateTableResult, getTournaments
 } = require('../queries/tournament_query')
-const { destroyAllMatch, getTableId, removeTeamOutOfMatch } = require('../queries/match_query')
+const { destroyAllMatch, getTableId, removeTeamOutOfMatch, getHappeningMatch } = require('../queries/match_query')
 
 const alphabet = R.split('', 'abcdefghijklmnopqrstuvwxyz')
 
@@ -240,7 +241,7 @@ exports.removeTeamToTable = async (req, res) => {
 
 exports.moveTeamToTable = async (req, res) => {
     const { id, tableResultId, tableId } = req.body
-    console.log(req.body)
+
     const tournament = await getById(id)
 
     if (!tournament) {
@@ -261,7 +262,24 @@ exports.moveTeamToTable = async (req, res) => {
 }
 
 exports.listTournament = async (req, res) => {
-    const tournaments = await getTournaments({ userId: req.uid })
+    const { type } = req.params
+    let tournaments = []
+
+    if (type == 'finished' ) {
+        tournaments = await getTournaments({ userId: req.uid, endDate: { [Op.lt]: new Date() } })
+    } if (type == 'happening'){
+        tournaments = await getTournaments({ userId: req.uid, endDate: { [Op.gt]: new Date() }, publish: true })
+    } else {
+        tournaments = await getTournaments({ userId: req.uid })
+    }
+
     responseData(res, listTournamentSerializer(tournaments))
+}
+
+exports.happeningMatch = async (req, res) => {
+    const { type } = req.params
+    const tournaments = await getHappeningMatch({ userId: req.uid, endDate: { [Op.gt]: new Date() }, publish: true })
+
+    responseData(res, tournaments)
 }
 
