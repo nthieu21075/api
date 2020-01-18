@@ -38,6 +38,14 @@ const Match = sequelizeDb.define('matches', {
     visitorTournamentTeamId: {
         type: sequelize.INTEGER,
     },
+    pitchId: {
+        type: sequelize.INTEGER,
+        allowNull: false
+    },
+    userId: {
+        type: sequelize.INTEGER,
+        allowNull: false
+    },
     homeTournamentTeamId: {
         type: sequelize.INTEGER,
     },
