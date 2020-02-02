@@ -41,6 +41,11 @@ const User = sequelizeDb.define('users', {
         type: sequelize.STRING,
         allowNull: false
     },
+    price: {
+        type: sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
     createdAt: {
         type: sequelize.DATE
     },

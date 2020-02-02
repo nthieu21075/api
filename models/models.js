@@ -10,6 +10,7 @@ const MatchResult = require('./matchresult')
 const TeamMember = require('./teammember')
 
 User.hasMany(Tournament, { as: 'tournaments' })
+User.belongsTo(Category, { foreignKey: 'categoryId' })
 Category.hasMany(Tournament, { as: 'tournaments' })
 Tournament.belongsTo(User, {
   as: 'organizer',

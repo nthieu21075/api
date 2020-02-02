@@ -25,3 +25,19 @@ exports.creatrOrganizer = async (req, res) => {
     responseData(res, {}, false)
 }
 
+exports.creatrReferee = async (req, res) => {
+    const { email, price , address, name, location, phoneNumber, password, categoryId } = req.body
+
+    const [user, created] = await findOrCreate(
+      { email: email },
+      { email: email, price: price , address: address, name: name, location: location, phoneNumber: phoneNumber, password: password, userType: 'referee', categoryId: categoryId }
+    )
+
+    if (!created) {
+       return responseError(res, 200, 409, 'Email is exsited')
+    }
+
+    responseData(res, {}, false)
+}
+
+
