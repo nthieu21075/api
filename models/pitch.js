@@ -16,11 +16,21 @@ const Pitch = sequelizeDb.define('Pitches', {
         type: sequelize.INTEGER,
         allowNull: true
     },
+    categoryId: {
+        type: sequelize.INTEGER,
+        allowNull: true
+    },
     location: {
         type: sequelize.ARRAY(sequelize.TEXT),
         defaultValue: []
     },
     mainImageUrl: {
+        type: sequelize.STRING
+    },
+    ownerName: {
+        type: sequelize.STRING
+    },
+    phoneNumber: {
         type: sequelize.STRING
     },
     createdAt: {

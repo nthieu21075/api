@@ -2,6 +2,7 @@ const R = require('ramda')
 const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { getOranziers, findOrCreate, getReferees } = require('../queries/user_query')
+const { findOrCreatePitch, getPitches } = require('../queries/pitch_query')
 
 exports.organizers = async (req, res) => {
     responseData(res, await getOranziers())
@@ -9,6 +10,10 @@ exports.organizers = async (req, res) => {
 
 exports.referees = async (req, res) => {
     responseData(res, await getReferees())
+}
+
+exports.pitches = async (req, res) => {
+    responseData(res, await getPitches())
 }
 
 exports.creatrOrganizer = async (req, res) => {
@@ -40,4 +45,17 @@ exports.creatrReferee = async (req, res) => {
     responseData(res, {}, false)
 }
 
+exports.createPitch = async (req, res) => {
+    const { name, ownerName, phoneNumber, address, price, location, categoryId } = req.body
 
+    const [pitch, created] = await findOrCreatePitch(
+      { name: name, categoryId: categoryId },
+      { categoryId: categoryId, name: name, ownerName: ownerName , address: address, phoneNumber: phoneNumber, location: location.split(','), mainImageUrl: req.file ? R.replace('public', '', req.file.path) : '', price: price }
+    )
+
+    if (!created) {
+       return responseError(res, 200, 409, 'Pitch is exsited')
+    }
+
+    responseData(res, {}, false)
+}

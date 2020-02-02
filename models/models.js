@@ -8,9 +8,11 @@ const TableResult = require('./tableresult')
 const Match = require('./match')
 const MatchResult = require('./matchresult')
 const TeamMember = require('./teammember')
+const Pitch = require('./pitch')
 
 User.hasMany(Tournament, { as: 'tournaments' })
 User.belongsTo(Category, { foreignKey: 'categoryId' })
+Pitch.belongsTo(Category, { foreignKey: 'categoryId' })
 Category.hasMany(Tournament, { as: 'tournaments' })
 Tournament.belongsTo(User, {
   as: 'organizer',
@@ -69,5 +71,6 @@ module.exports = {
   TableResult,
   Match,
   MatchResult,
-  TeamMember
+  TeamMember,
+  Pitch
 }
