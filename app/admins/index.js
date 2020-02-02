@@ -3,6 +3,7 @@ const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { getOranziers, findOrCreate, getReferees } = require('../queries/user_query')
 const { findOrCreatePitch, getPitches } = require('../queries/pitch_query')
+const { getAll, findOrCreate: findOrCreateCategory } = require('../queries/category_query')
 
 exports.organizers = async (req, res) => {
     responseData(res, await getOranziers())
@@ -14,6 +15,10 @@ exports.referees = async (req, res) => {
 
 exports.pitches = async (req, res) => {
     responseData(res, await getPitches())
+}
+
+exports.categories = async (req, res) => {
+    responseData(res, await getAll())
 }
 
 exports.creatrOrganizer = async (req, res) => {
@@ -55,6 +60,21 @@ exports.createPitch = async (req, res) => {
 
     if (!created) {
        return responseError(res, 200, 409, 'Pitch is exsited')
+    }
+
+    responseData(res, {}, false)
+}
+
+exports.createCategory = async (req, res) => {
+    const { name } = req.body
+
+    const [category, created] = await findOrCreateCategory(
+      { name: name },
+      { name: name, imageUrl: req.file ? R.replace('public', '', req.file.path) : '' }
+    )
+
+    if (!created) {
+       return responseError(res, 200, 409, 'Category is exsited')
     }
 
     responseData(res, {}, false)
