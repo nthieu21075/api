@@ -9,6 +9,7 @@ const Match = require('./match')
 const MatchResult = require('./matchresult')
 const TeamMember = require('./teammember')
 const Pitch = require('./pitch')
+const Manual = require('./manual')
 
 User.hasMany(Tournament, { as: 'tournaments' })
 User.belongsTo(Category, { foreignKey: 'categoryId' })
@@ -72,5 +73,6 @@ module.exports = {
   Match,
   MatchResult,
   TeamMember,
-  Pitch
+  Pitch,
+  Manual
 }
