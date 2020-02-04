@@ -4,7 +4,7 @@ const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { getOranziers, findOrCreate, getReferees, getOrganzier, updateOrganzier, getReferee, updateReferee } = require('../queries/user_query')
 const { findOrCreatePitch, getPitches, getPitch, updatePitch } = require('../queries/pitch_query')
-const { getAll, findOrCreate: findOrCreateCategory } = require('../queries/category_query')
+const { getAll, findOrCreate: findOrCreateCategory, getCategory, updateCategory } = require('../queries/category_query')
 const { createManual, getManual, destroyManual } = require('../queries/manual_query')
 
 exports.organizers = async (req, res) => {
@@ -46,6 +46,36 @@ exports.refereeDetail = async (req, res) => {
 exports.pitchDetail = async (req, res) => {
     const { id } = req.params
     responseData(res, await getPitch(id))
+}
+
+exports.categoryDetail = async (req, res) => {
+    const { id } = req.params
+    responseData(res, await getCategory(id))
+}
+
+exports.updateCategory = async (req, res) => {
+    const { name, id, removeImage } = req.body
+
+    let fields = {
+      id: id,
+      name: name
+    }
+
+    if (req.file) {
+      fields['imageUrl'] = R.replace('public', '', req.file.path)
+    }
+
+    if (removeImage) {
+      fields['imageUrl'] = ''
+    }
+
+    const [result, pitch] = await updateCategory(id, fields)
+
+    if (result == 0) {
+        responseError(res, 200, 404, 'Category did not exist')
+    } else {
+        responseData(res, pitch)
+    }
 }
 
 exports.updatePitch = async (req, res) => {
