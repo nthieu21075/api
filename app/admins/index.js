@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { getOranziers, findOrCreate, getReferees, getOrganzier, updateOrganzier, getReferee, updateReferee } = require('../queries/user_query')
-const { findOrCreatePitch, getPitches } = require('../queries/pitch_query')
+const { findOrCreatePitch, getPitches, getPitch, updatePitch } = require('../queries/pitch_query')
 const { getAll, findOrCreate: findOrCreateCategory } = require('../queries/category_query')
 const { createManual, getManual, destroyManual } = require('../queries/manual_query')
 
@@ -43,6 +43,41 @@ exports.refereeDetail = async (req, res) => {
     responseData(res, await getReferee(id))
 }
 
+exports.pitchDetail = async (req, res) => {
+    const { id } = req.params
+    responseData(res, await getPitch(id))
+}
+
+exports.updatePitch = async (req, res) => {
+    const { name, ownerName, phoneNumber, address, price, location, categoryId, id, removeImage } = req.body
+
+    let fields = {
+      id: id,
+      categoryId: categoryId,
+      name: name,
+      ownerName: ownerName,
+      address: address,
+      phoneNumber: phoneNumber,
+      location: location.split(','),
+      price: price
+    }
+
+    if (req.file) {
+      fields['mainImageUrl'] = R.replace('public', '', req.file.path)
+    }
+
+    if (removeImage) {
+      fields['mainImageUrl'] = ''
+    }
+
+    const [result, pitch] = await updatePitch(id, fields)
+
+    if (result == 0) {
+        responseError(res, 200, 404, 'Pitch did not exist')
+    } else {
+        responseData(res, pitch)
+    }
+}
 
 exports.updateReferee = async (req, res) => {
     const { email, price , address, name, location, phoneNumber, password, categoryId, id } = req.body
@@ -67,7 +102,6 @@ exports.updateReferee = async (req, res) => {
         responseData(res, user)
     }
 }
-
 
 exports.updateOrganizer = async (req, res) => {
     const { email, organizerName , address, name, location, phoneNumber, password, id } = req.body
