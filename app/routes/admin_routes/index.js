@@ -1,5 +1,5 @@
 const { organizers, referees, creatrOrganizer, creatrReferee, pitches, createPitch, categories, createCategory, createManual, getManual, removeManual,
-  organizerDetail, updateOrganizer
+  organizerDetail, updateOrganizer, refereeDetail, updateReferee
 
 } = require('../../admins/index')
 const { asyncMiddleware } = require('../../middlewares/async_middleware')
@@ -14,6 +14,8 @@ module.exports = app => {
 
   app.get('/api/admins/referees', withAuth, asyncMiddleware(referees))
   app.post('/api/admins/create-referee', withAuth, asyncMiddleware(creatrReferee))
+  app.get('/api/admins/referee-detail/:id', withAuth, asyncMiddleware(refereeDetail))
+  app.post('/api/admins/update-referee', withAuth, asyncMiddleware(updateReferee))
 
   app.get('/api/admins/pitches', withAuth, asyncMiddleware(pitches))
   app.post('/api/admins/create-pitch', withAuth, upload.single('image'), asyncMiddleware(createPitch))

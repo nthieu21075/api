@@ -2,7 +2,7 @@ const R = require('ramda')
 const bcrypt = require('bcrypt')
 const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
-const { getOranziers, findOrCreate, getReferees, getOrganzier, updateOrganzier } = require('../queries/user_query')
+const { getOranziers, findOrCreate, getReferees, getOrganzier, updateOrganzier, getReferee, updateReferee } = require('../queries/user_query')
 const { findOrCreatePitch, getPitches } = require('../queries/pitch_query')
 const { getAll, findOrCreate: findOrCreateCategory } = require('../queries/category_query')
 const { createManual, getManual, destroyManual } = require('../queries/manual_query')
@@ -37,6 +37,37 @@ exports.organizerDetail = async (req, res) => {
     const { id } = req.params
     responseData(res, await getOrganzier(id))
 }
+
+exports.refereeDetail = async (req, res) => {
+    const { id } = req.params
+    responseData(res, await getReferee(id))
+}
+
+
+exports.updateReferee = async (req, res) => {
+    const { email, price , address, name, location, phoneNumber, password, categoryId, id } = req.body
+
+    let fields = { email: email, price: price , address: address, name: name, location: location, phoneNumber: phoneNumber, categoryId: categoryId }
+
+    if (password) {
+      await bcrypt.hash(R.toString(password), 10)
+          .then(hash => {
+              fields['password'] = hash
+          }).catch(err => {
+              console.log(err)
+              throw new Error()
+          })
+    }
+
+    const [result, user] = await updateReferee(id, fields)
+
+    if (result == 0) {
+        responseError(res, 200, 404, 'User did not exist')
+    } else {
+        responseData(res, user)
+    }
+}
+
 
 exports.updateOrganizer = async (req, res) => {
     const { email, organizerName , address, name, location, phoneNumber, password, id } = req.body

@@ -14,6 +14,9 @@ exports.getReferee = (id) => User.findOne({ where: { id: id, userType: 'referee'
 
 exports.updateOrganzier = (id, fields) => User.update(fields, { returning: true, where: { id: id, userType: 'organizer' } })
 
+exports.updateReferee = (id, fields) => User.update(fields, { returning: true, where: { id: id, userType: 'referee' } })
+
+
 exports.getReferees = () => User.findAll(
   {
     where: { userType: 'referee' },
