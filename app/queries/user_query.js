@@ -9,6 +9,11 @@ exports.updateUser = (id, fields) => User.update(fields, { returning: true, wher
 
 exports.getOranziers = () => User.findAll({ where: { userType: 'organizer' } })
 
+exports.getOrganzier = (id) => User.findOne({ where: { id: id, userType: 'organizer' } })
+exports.getReferee = (id) => User.findOne({ where: { id: id, userType: 'referee' } })
+
+exports.updateOrganzier = (id, fields) => User.update(fields, { returning: true, where: { id: id, userType: 'organizer' } })
+
 exports.getReferees = () => User.findAll(
   {
     where: { userType: 'referee' },
