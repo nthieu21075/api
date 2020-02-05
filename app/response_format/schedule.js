@@ -17,6 +17,8 @@ exports.matchesSerializer = R.map((table) => {
       homeTeam: homeTeam,
       visitorTeam: visitorTeam,
       userConfirmed: match.userConfirmed,
+      pitch: match.pitch,
+      referee: match.referee,
       refereeConfirmed: match.refereeConfirmed
     }
   })(table.matches)

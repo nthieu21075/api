@@ -16,6 +16,7 @@ exports.updateOrganzier = (id, fields) => User.update(fields, { returning: true,
 
 exports.updateReferee = (id, fields) => User.update(fields, { returning: true, where: { id: id, userType: 'referee' } })
 
+exports.getRefereesByCategory = (categoryId) => User.findAll({ where: { categoryId: categoryId, userType: 'referee' } })
 
 exports.getReferees = () => User.findAll(
   {

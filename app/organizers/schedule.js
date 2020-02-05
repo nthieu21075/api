@@ -4,6 +4,9 @@ const { responseData, responseError } = require('../helpers/response')
 const { matchesSerializer } = require('../response_format/schedule')
 const { getById, updateTournament, getTounamentTable } = require('../queries/tournament_query')
 const { create: createMatch, getMatchOfTournament, destroyAllMatch, getTableId } = require('../queries/match_query')
+const { getPitchesByCategory } = require('../queries/pitch_query')
+const { getRefereesByCategory } = require('../queries/user_query')
+
 const async = require("async")
 
 exports.generateSchedule = async (req, res) => {
@@ -38,8 +41,10 @@ exports.generateSchedule = async (req, res) => {
 
     await createMatch(matchesData)
     const matches = await getMatchOfTournament(id)
+    const pitches = await getPitchesByCategory(tournament.categoryId)
+    const referees = await getRefereesByCategory(tournament.categoryId)
 
-    responseData(res, matchesSerializer(matches.get({ plain: true }).tables))
+    responseData(res, { matches: matchesSerializer(matches.get({ plain: true }).tables), pitches: pitches, referees: referees })
 }
 
 exports.getSchedule =  async (req, res) => {
@@ -52,8 +57,10 @@ exports.getSchedule =  async (req, res) => {
     }
 
     const matches = await getMatchOfTournament(id)
+    const pitches = await getPitchesByCategory(tournament.categoryId)
+    const referees = await getRefereesByCategory(tournament.categoryId)
 
-    responseData(res, matchesSerializer(matches.get({ plain: true }).tables))
+    responseData(res, { matches: matchesSerializer(matches.get({ plain: true }).tables), pitches: pitches, referees: referees })
 }
 
 const assignTeamToMatch = (teams, matches)  => {
