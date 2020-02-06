@@ -36,6 +36,8 @@ exports.updateMatchInfo = async (req, res) => {
 
     if (visitorTournamentTeamId && homeTournamentTeamId) {
         const nextMatch = await getNextMatch({ tableId: tableId, index: match.rootIndex })
+        console.log(match)
+        console.log(nextMatch)
         let winnerTeam = homeTournamentTeamId
         await updateTableResultInfo(tournamentId, homeTournamentTeamId, tableId)
         await updateTableResultInfo(tournamentId, visitorTournamentTeamId, tableId)
@@ -44,7 +46,11 @@ exports.updateMatchInfo = async (req, res) => {
             winnerTeam = visitorTournamentTeamId
         }
 
-        await updateMatchIndex({ id: nextMatch.id }, { visitorTournamentTeamId: winnerTeam })
+        if (nextMatch.visitorTournamentTeamId == null && nextMatch.homeTournamentTeamId == null) {
+            await updateMatchIndex({ id: nextMatch.id }, { homeTournamentTeamId: winnerTeam })
+        } else {
+            await updateMatchIndex({ id: nextMatch.id }, { visitorTournamentTeamId: winnerTeam })
+        }
     }
 
     const matches = await getMatchOfTournament(tournamentId)

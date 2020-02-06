@@ -1,5 +1,6 @@
 const R = require('ramda')
 const moment = require('moment')
+const _ = require('lodash')
 
 exports.matchesSerializer = R.map((table) => {
   const matches = R.map((match) => {
@@ -22,7 +23,7 @@ exports.matchesSerializer = R.map((table) => {
       referee: match.referee,
       refereeConfirmed: match.refereeConfirmed
     }
-  })(table.matches)
+  })(_.sortBy(table.matches, [function(o) { return o.index }]))
 
   return {
     table: table.name,
