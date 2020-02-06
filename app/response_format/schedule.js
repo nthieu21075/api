@@ -12,6 +12,7 @@ exports.matchesSerializer = R.map((table) => {
       index: match.index,
       rootIndex: match.rootIndex,
       scheduled: moment(match.scheduled).format('x'),
+      tableId: match.tableId,
       homeScore: match.homeScore,
       visitorScore: match.visitorScore,
       homeTeam: homeTeam,

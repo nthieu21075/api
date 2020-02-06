@@ -1,13 +1,110 @@
 const R = require('ramda')
+const moment = require('moment')
 const _ = require('lodash')
+const Op = require('sequelize').Op
 const { responseData, responseError } = require('../helpers/response')
 const { matchesSerializer } = require('../response_format/schedule')
 const { getById, updateTournament, getTounamentTable } = require('../queries/tournament_query')
-const { create: createMatch, getMatchOfTournament, destroyAllMatch, getTableId } = require('../queries/match_query')
+const { create: createMatch, getMatchOfTournament, destroyAllMatch, getTableId, updateMatch, getTableResult, getMatchs, updateTableResult, getMatch, getNextMatch, updateMatchIndex } = require('../queries/match_query')
 const { getPitchesByCategory } = require('../queries/pitch_query')
 const { getRefereesByCategory } = require('../queries/user_query')
 
 const async = require("async")
+
+exports.updateMatchInfo = async (req, res) => {
+    const { tournamentId, pitchId, refereeId, homeScore, visitorScore, matchId, scheduled, tableId, visitorTournamentTeamId, homeTournamentTeamId } = req.body
+    const tournament = await getById(tournamentId)
+
+    if (!tournament) {
+        responseError(res, 200, 400, 'Tournament not found')
+    }
+
+    let fields = { pitchId: pitchId, userId: refereeId, scheduled: moment(parseInt(scheduled)) }
+
+    if (visitorTournamentTeamId && homeTournamentTeamId) {
+        fields['homeScore'] =  homeScore
+        fields['visitorScore'] =  visitorScore
+    }
+
+    const [result, _] = await updateMatch(matchId, fields)
+
+    if (result == 0) {
+        return responseError(res, 200, 404, 'Update Match Info was failure')
+    }
+
+    const match = await getMatch(matchId)
+
+    if (visitorTournamentTeamId && homeTournamentTeamId) {
+        const nextMatch = await getNextMatch({ tableId: tableId, index: match.rootIndex })
+        let winnerTeam = homeTournamentTeamId
+        await updateTableResultInfo(tournamentId, homeTournamentTeamId, tableId)
+        await updateTableResultInfo(tournamentId, visitorTournamentTeamId, tableId)
+
+        if (homeScore < visitorScore) {
+            winnerTeam = visitorTournamentTeamId
+        }
+
+        await updateMatchIndex({ id: nextMatch.id }, { visitorTournamentTeamId: winnerTeam })
+    }
+
+    const matches = await getMatchOfTournament(tournamentId)
+    const pitches = await getPitchesByCategory(tournament.categoryId)
+    const referees = await getRefereesByCategory(tournament.categoryId)
+
+    responseData(res, { matches: matchesSerializer(matches.get({ plain: true }).tables), pitches: pitches, referees: referees })
+}
+
+const updateTableResultInfo = async (tournamentId, teamTournamentId, tableId) => {
+    let win = 0
+    let lose = 0
+    let wp = 0
+    let point = 0
+
+    const matches = await getMatchs({
+        tableId: tableId,
+        [Op.or]: [
+          {
+            visitorTournamentTeamId: teamTournamentId
+          },
+          {
+            homeTournamentTeamId: teamTournamentId
+          }
+        ]
+    })
+
+    R.map((match) => {
+        if (match.homeTournamentTeamId == teamTournamentId){
+            if(match.homeScore > match.visitorScore) {
+                win += 1
+                point += 3
+            } else if(match.homeScore < match.visitorScore) {
+                lose += 1
+                point -= 3
+
+            } else {
+                point +=1
+            }
+            wp += (match.homeScore - match.visitorScore)
+        } else {
+            if(match.visitorScore > match.homeScore) {
+                win += 1
+                point += 3
+            } else if(match.visitorScore < match.homeScore) {
+                lose += 1
+                point -= 3
+            } else {
+                point +=1
+            }
+
+            wp += (match.visitorScore - match.homeScore)
+        }
+    }, matches)
+
+    await updateTableResult(
+        { tableId: tableId, tournamentTeamId: teamTournamentId, tournamentId: tournamentId },
+        { win: win, lose: lose, wp: wp, point: point }
+    )
+}
 
 exports.generateSchedule = async (req, res) => {
     const { id, scheduleType } = req.body

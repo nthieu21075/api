@@ -1,11 +1,22 @@
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const R = require('ramda')
-const { Match, Tournament, Table, TournamentTeam } = require('../../models/models')
+const { Match, Tournament, Table, TournamentTeam, TableResult } = require('../../models/models')
 
 exports.create = (fields) => Match.bulkCreate(fields)
 
+exports.getMatchs = (fields) => Match.findAll({ where: fields })
+exports.getMatch = (id) => Match.findOne({ where: {id: id}})
+
+exports.getNextMatch = (fields) => Match.findOne({ where: fields})
+
 exports.getTableId = (tournamentId) => R.pluck('id')(Table.findAll({ where: { tournamentId: tournamentId }, raw: true }))
+
+exports.getTableResult = (tableId, tournamentTeamId, tournamentId) => TableResult.findOne({ where: { tableId: tableId, tournamentTeamId: tournamentTeamId, tournamentId: tournamentId } })
+
+exports.updateTableResult = (whereFields, updatefields) => TableResult.update(updatefields, { returning: true, where: whereFields })
+
+exports.updateMatchIndex = (whereFields, updatefields) => Match.update(updatefields, { returning: true, where: whereFields })
 
 exports.destroyAllMatch = (tableIds) => Match.destroy({
   where: {
@@ -73,3 +84,5 @@ exports.removeTeamOutOfMatch = (tournamentIds) => Match.update({
   },
   raw: true
 })
+
+exports.updateMatch = (id, fields) => Match.update(fields, { returning: true, where: { id: id } })

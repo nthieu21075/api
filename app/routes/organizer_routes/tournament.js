@@ -1,5 +1,5 @@
 const { create, basicInfo, update, teamManagement, generateTable, availableTeam, addTeam, removeTeam, addTeamToTable, removeTeamToTable, moveTeamToTable, listTournament, happeningMatch } = require('../../organizers/tournaments')
-const { generateSchedule, getSchedule } = require('../../organizers/schedule')
+const { generateSchedule, getSchedule, updateMatchInfo } = require('../../organizers/schedule')
 const { pendingRequest, approvePendingRequest, unapprovePendingRequest } = require('../../organizers/pendingRequest')
 const { asyncMiddleware } = require('../../middlewares/async_middleware')
 const withAuth = require('../../middlewares/middleware')
@@ -23,6 +23,7 @@ module.exports = app => {
 
   app.post('/api/organizer/tournament/generate-schedule', withAuth, asyncMiddleware(generateSchedule))
   app.get('/api/organizer/tournament/get-schedule/:id', withAuth, asyncMiddleware(getSchedule))
+  app.post('/api/organizer/tournament/update-match-info', withAuth, asyncMiddleware(updateMatchInfo))
 
   app.get('/api/organizer/tournament/happening-match', withAuth, asyncMiddleware(happeningMatch))
 

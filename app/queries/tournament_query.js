@@ -84,7 +84,7 @@ exports.getTounamentTable = (tournamentId) => Table.findAll(
     ],
     order: [
       [ 'name', 'ASC'],
-      [ {model: TableResult}, 'point', 'ASC']
+      [ {model: TableResult}, 'point', 'DESC']
     ]
   }
 )
