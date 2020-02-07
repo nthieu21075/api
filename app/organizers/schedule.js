@@ -167,7 +167,8 @@ exports.getSchedule =  async (req, res) => {
 }
 
 const assignTeamToMatch = (teams, matches)  => {
-  const match = _.reverse(matches)
+  const match = _.sortBy(matches, [function(o) { return o.name }])
+
   const matchTeam = _.chunk(_.shuffle(teams), 2)
 
   _.forEach(matchTeam, ([homeTeam, visitorTeam], index) => {
@@ -175,7 +176,7 @@ const assignTeamToMatch = (teams, matches)  => {
     match[index].visitorTournamentTeamId = visitorTeam ? visitorTeam.id : null
   })
 
-  return _.reverse(match)
+  return match
 }
 
 

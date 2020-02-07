@@ -264,10 +264,9 @@ exports.moveTeamToTable = async (req, res) => {
 exports.listTournament = async (req, res) => {
     const { type } = req.params
     let tournaments = []
-
     if (type == 'finished' ) {
         tournaments = await getTournaments({ userId: req.uid, endDate: { [Op.lt]: new Date() } })
-    } if (type == 'happening'){
+    } else if (type == 'happening'){
         tournaments = await getTournaments({ userId: req.uid, endDate: { [Op.gt]: new Date() }, publish: true })
     } else {
         tournaments = await getTournaments({ userId: req.uid })

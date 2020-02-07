@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
+const moment = require('moment')
 const R = require('ramda')
 const { Match, Tournament, Table, TournamentTeam, TableResult } = require('../../models/models')
 
@@ -56,7 +57,15 @@ exports.getHappeningMatch = (fields) => Tournament.findAll({
             },
             visitorTournamentTeamId: {
               [Op.ne]: null
-            }
+            },
+            [Op.and]: [
+              {
+                scheduled: {[Op.gt]: moment().startOf('day') }
+              },
+              {
+                scheduled: {[Op.lt]: moment().endOf('day') }
+              }
+            ]
           },
           include: [ 'homeTeam', 'visitorTeam' ]
         }

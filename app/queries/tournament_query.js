@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const R = require('ramda')
-const { Tournament, TableResult, TournamentTeam, Table, Team, User, Match } = require('../../models/models')
+const { Tournament, TableResult, TournamentTeam, Table, Team, User, Match, Pitch } = require('../../models/models')
 
 exports.getByfield = (fields) => Tournament.findAll({ where: fields, include: 'category', raw: true })
 
@@ -43,7 +43,7 @@ exports.getTournament = (tournamentId) => Tournament.findOne(
         include: [
           {
             model: Match,
-            include: [ 'homeTeam', 'visitorTeam' ]
+            include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ]
           },
           {
             model: TableResult,
@@ -56,7 +56,8 @@ exports.getTournament = (tournamentId) => Tournament.findOne(
                   }
                 ]
               }
-            ]
+            ],
+            order: ['point', 'ASC']
           }
         ]
       }
