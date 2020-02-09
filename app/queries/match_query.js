@@ -9,6 +9,34 @@ exports.create = (fields) => Match.bulkCreate(fields)
 exports.getMatchs = (fields) => Match.findAll({ where: fields })
 exports.getMatch = (id) => Match.findOne({ where: {id: id}})
 
+exports.getRefereeTournament = (id, fields) => Tournament.findAll({
+  where: fields,
+  include: [
+    'organizer',
+    {
+      model: Table,
+      include: [
+        {
+          model: Match,
+          where: {
+            userId: id
+          },
+          include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ]
+        }
+      ]
+    }
+  ]
+})
+
+exports.getRefereeMatch = (fields) => Match.findAll({
+  where: fields,
+  include: [
+    {
+      model: Table
+    }
+  ]
+})
+
 exports.getNextMatch = (fields) => Match.findOne({ where: fields})
 
 exports.getTableId = (tournamentId) => R.pluck('id')(Table.findAll({ where: { tournamentId: tournamentId }, raw: true }))
@@ -67,7 +95,7 @@ exports.getHappeningMatch = (fields) => Tournament.findAll({
               }
             ]
           },
-          include: [ 'homeTeam', 'visitorTeam' ]
+          include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ]
         }
       ]
     }
