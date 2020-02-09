@@ -9,7 +9,7 @@ exports.create = (fields) => Match.bulkCreate(fields)
 exports.getMatchs = (fields) => Match.findAll({ where: fields })
 exports.getMatch = (id) => Match.findOne({ where: {id: id}})
 
-exports.getRefereeTournament = (id, fields) => Tournament.findAll({
+exports.getRefereeTournament = (id, fields, matchFields) => Tournament.findAll({
   where: fields,
   include: [
     'organizer',
@@ -18,9 +18,7 @@ exports.getRefereeTournament = (id, fields) => Tournament.findAll({
       include: [
         {
           model: Match,
-          where: {
-            userId: id
-          },
+          where: matchFields,
           include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ]
         }
       ]
@@ -30,11 +28,11 @@ exports.getRefereeTournament = (id, fields) => Tournament.findAll({
 
 exports.getRefereeMatch = (fields) => Match.findAll({
   where: fields,
-  include: [
-    {
-      model: Table
-    }
-  ]
+    include: [
+      {
+        model: Table
+      }
+    ]
 })
 
 exports.getNextMatch = (fields) => Match.findOne({ where: fields})

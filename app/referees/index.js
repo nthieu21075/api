@@ -12,10 +12,10 @@ const { findUserById, updateUser } = require('../queries/user_query')
 exports.invitedMatch = async (req, res) => {
     const { type } = req.params
 
-    let allMatch = []
+    let fields = {}
 
     if (type == 'happeningMatch'){
-        allMatch = await getRefereeMatch({
+        fields = {
             userId: req.uid,
             refereeConfirmed: false,
             [Op.and]: [
@@ -26,12 +26,14 @@ exports.invitedMatch = async (req, res) => {
                 scheduled: {[Op.lt]: moment().endOf('day') }
               }
             ]
-        })
+        }
     } else if (type == 'finishedMatch') {
-        allMatch = await getRefereeMatch({ userId: req.uid, refereeConfirmed: true })
+        fields = { userId: req.uid, refereeConfirmed: true }
     } else {
-        allMatch = await getRefereeMatch({ userId: req.uid, refereeConfirmed: false })
+        fields = { userId: req.uid, refereeConfirmed: false }
     }
+
+    const allMatch = await getRefereeMatch(fields)
 
     let tournamentIds = []
 
@@ -39,7 +41,7 @@ exports.invitedMatch = async (req, res) => {
       tournamentIds.push(match.table.tournamentId)
     })(allMatch)
 
-    responseData(res, await getRefereeTournament(req.uid, { id: { [Op.in]: _.uniq(tournamentIds) }}))
+    responseData(res, await getRefereeTournament(req.uid, { id: { [Op.in]: _.uniq(tournamentIds) }}, fields))
 }
 
 exports.profileDetail = async (req, res) => {
