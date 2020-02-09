@@ -7,6 +7,7 @@ const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { getRefereeMatch, getRefereeTournament, updateTableResult, getMatch, getNextMatch, updateMatchIndex, updateMatch , getMatchs} = require('../queries/match_query')
 const { getById } = require('../queries/tournament_query')
+const { findUserById, updateUser } = require('../queries/user_query')
 
 exports.invitedMatch = async (req, res) => {
     const { type } = req.params
@@ -39,6 +40,10 @@ exports.invitedMatch = async (req, res) => {
     })(allMatch)
 
     responseData(res, await getRefereeTournament(req.uid, { id: { [Op.in]: _.uniq(tournamentIds) }}))
+}
+
+exports.profileDetail = async (req, res) => {
+    responseData(res, await findUserById(req.uid))
 }
 
 exports.updateMatchInfo = async (req, res) => {
@@ -137,4 +142,57 @@ const updateTableResultInfo = async (tournamentId, teamTournamentId, tableId) =>
         { tableId: tableId, tournamentTeamId: teamTournamentId, tournamentId: tournamentId },
         { win: win, lose: lose, wp: wp, point: point }
     )
+}
+
+exports.updateProfile = async (req, res) => {
+    const { email , address, name, location, phoneNumber } = req.body
+    const [result, user] = await updateUser(req.uid,
+        { email: email, address: address, name: name, location: location, phoneNumber: phoneNumber }
+    )
+
+    if (result == 0) {
+        responseError(res, 200, 404, 'User did not exist')
+    } else {
+        responseData(res, { })
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body
+    const user = await findUserById(req.uid)
+
+    if (!user) {
+        responseError(res, 200, 404, 'User did not exist')
+    } else {
+        user.isCorrectPassword(R.toString(currentPassword), (err, same) => {
+            if (err) {
+                responseError(res, 500, 500, err)
+            } else if (!same) {
+                responseError(res, 200, 409, 'Incorrect password')
+            } else {
+                updatePassword(res, req.uid, newPassword)
+            }
+        })
+    }
+}
+
+const updatePassword = async (res, uid, newPassword) => {
+    let encryptPassword = newPassword
+
+    await bcrypt.hash(R.toString(newPassword), 10)
+        .then(hash => {
+            console.log(hash)
+            encryptPassword = hash
+        }).catch(err => {
+            console.log(err)
+            throw new Error()
+        })
+
+    const [result, updatedUser] = await updateUser(uid, { password: encryptPassword })
+
+    if (result == 0) {
+        responseError(res, 200, 409, 'Update password was failed')
+    } else {
+        responseData(res, {})
+    }
 }
