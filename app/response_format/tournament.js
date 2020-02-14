@@ -86,6 +86,7 @@ exports.listTournamentSerializer = R.map((tournament) => ({
     title: tournament.name,
     description: tournament.shortDescription,
     organizer: tournament.organizer.name,
+    organizerId: tournament.organizer.id,
     startDate: tournament.startDate,
     endDate: tournament.endDate,
     team: tournament.team,

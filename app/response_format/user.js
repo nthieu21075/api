@@ -1,4 +1,5 @@
 exports.userSerialize = (user) => ({
+  id: user.id,
   name: user.name,
   email: user.email,
   location: user.location,
