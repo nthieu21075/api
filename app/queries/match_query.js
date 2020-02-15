@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const moment = require('moment')
 const R = require('ramda')
-const { Match, Tournament, Table, TournamentTeam, TableResult } = require('../../models/models')
+const { Match, Tournament, Table, TournamentTeam, TableResult, Team } = require('../../models/models')
 
 exports.create = (fields) => Match.bulkCreate(fields)
 
@@ -19,7 +19,22 @@ exports.getRefereeTournament = (id, fields, matchFields) => Tournament.findAll({
         {
           model: Match,
           where: matchFields,
-          include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ]
+          include: [ 'pitch', 'referee',
+            {
+              model: TournamentTeam,
+              as: 'homeTournamentTeam',
+              include: [{
+                model: Team
+              }]
+            },
+            {
+              model: TournamentTeam,
+              as: 'visitorTournamentTeam',
+              include: [{
+                model: Team
+              }]
+            },
+          ]
         }
       ]
     }
@@ -61,7 +76,22 @@ exports.getMatchOfTournament = (tournamentId) => Tournament.findOne({
       include: [
         {
           model: Match,
-          include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ],
+          include: [ 'pitch', 'referee',
+            {
+              model: TournamentTeam,
+              as: 'homeTournamentTeam',
+              include: [{
+                model: Team
+              }]
+            },
+            {
+              model: TournamentTeam,
+              as: 'visitorTournamentTeam',
+              include: [{
+                model: Team
+              }]
+            },
+          ],
           order: ['index', 'ASC']
         }
       ]
@@ -93,7 +123,22 @@ exports.getHappeningMatch = (fields) => Tournament.findAll({
               }
             ]
           },
-          include: [ 'homeTeam', 'visitorTeam', 'pitch', 'referee' ]
+          include: [ 'pitch', 'referee',
+            {
+              model: TournamentTeam,
+              as: 'homeTournamentTeam',
+              include: [{
+                model: Team
+              }]
+            },
+            {
+              model: TournamentTeam,
+              as: 'visitorTournamentTeam',
+              include: [{
+                model: Team
+              }]
+            },
+          ]
         }
       ]
     }

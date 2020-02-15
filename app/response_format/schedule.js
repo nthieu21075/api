@@ -4,8 +4,9 @@ const _ = require('lodash')
 
 exports.matchesSerializer = R.map((table) => {
   const matches = R.map((match) => {
-    const homeTeam = match.homeTeam ? { id: match.homeTeam.id, logo: match.homeTeam.logo, name: match.homeTeam.name } : null
-    const visitorTeam = match.visitorTeam ? { id: match.visitorTeam.id, logo: match.visitorTeam.logo, name: match.visitorTeam.name } : null
+
+    const homeTeam = match.homeTournamentTeam && match.homeTournamentTeam.team? { tournamentId: match.homeTournamentTeam.id, id: match.homeTournamentTeam.team.id, logo: match.homeTournamentTeam.team.logo, name: match.homeTournamentTeam.team.name } : null
+    const visitorTeam = match.visitorTournamentTeam && match.visitorTournamentTeam.team? { tournamentId: match.visitorTournamentTeam.id, id: match.visitorTournamentTeam.team.id, logo: match.visitorTournamentTeam.team.logo, name: match.visitorTournamentTeam.team.name } : null
 
     return {
       id: match.id,

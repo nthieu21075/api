@@ -85,7 +85,7 @@ exports.teamManagement = async (req, res) => {
     const tables = await getTounamentTable(id)
     const teamIds = await getTeamInTable(id)
     const teams = await getTounamentTeam(id, teamIds)
-
+    console.log(tables)
     responseData(res, {
         tables: listTournamentTableSerializer(tables),
         teams: listTournamentTeamSerializer(teams)
