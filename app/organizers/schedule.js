@@ -157,6 +157,11 @@ exports.generateSchedule = async (req, res) => {
     const pitches = await getPitchesByCategory(tournament.categoryId)
     const referees = await getRefereesByCategory(tournament.categoryId)
 
+    await updateTableResult(
+        { tournamentId: tournament.id },
+        { win: 0, lose: 0, wp: 0, point: 0 }
+    )
+
     responseData(res, { matches: matchesSerializer(matches.get({ plain: true }).tables), pitches: pitches, referees: referees })
 }
 
