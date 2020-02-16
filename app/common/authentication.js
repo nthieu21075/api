@@ -123,7 +123,5 @@ const userLoginData = async (res, user) => {
     const userTeam = await getUserTeam(user.id)
     const tournamentTeam = await getUserTournamentTeam(user.id)
 
-    console.log(tournamentTeam)
-
     responseData(res, { user: userSerialize(user.get({plain: true})), team: userTeam, tournamentTeam: tournamentTeam }, true, token)
 }

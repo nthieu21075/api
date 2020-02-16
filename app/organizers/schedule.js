@@ -38,8 +38,7 @@ exports.updateMatchInfo = async (req, res) => {
         const nextMatch = await getNextMatch({ tableId: tableId, index: match.rootIndex })
 
         let winnerTeam = homeTournamentTeamId
-        console.log(homeTournamentTeamId)
-        console.log(visitorTournamentTeamId)
+
         await updateTableResultInfo(tournamentId, homeTournamentTeamId, tableId)
         await updateTableResultInfo(tournamentId, visitorTournamentTeamId, tableId)
 
@@ -48,13 +47,16 @@ exports.updateMatchInfo = async (req, res) => {
         }
 
         if (homeScore != visitorScore) {
-            if (nextMatch.visitorTournamentTeamId == null && nextMatch.homeTournamentTeamId == null) {
-                await updateMatchIndex({ id: nextMatch.id }, { homeTournamentTeamId: winnerTeam })
-            } else if (nextMatch.homeTournamentTeamId == visitorTournamentTeamId || nextMatch.homeTournamentTeamId == homeTournamentTeamId) {
-                await updateMatchIndex({ id: nextMatch.id }, { homeTournamentTeamId: winnerTeam })
-            } else {
-                await updateMatchIndex({ id: nextMatch.id }, { visitorTournamentTeamId: winnerTeam })
+            if (nextMatch){
+                if (nextMatch.visitorTournamentTeamId == null && nextMatch.homeTournamentTeamId == null) {
+                    await updateMatchIndex({ id: nextMatch.id }, { homeTournamentTeamId: winnerTeam })
+                } else if (nextMatch.homeTournamentTeamId == visitorTournamentTeamId || nextMatch.homeTournamentTeamId == homeTournamentTeamId) {
+                    await updateMatchIndex({ id: nextMatch.id }, { homeTournamentTeamId: winnerTeam })
+                } else {
+                    await updateMatchIndex({ id: nextMatch.id }, { visitorTournamentTeamId: winnerTeam })
+                }
             }
+
         }
     }
 
@@ -88,9 +90,6 @@ const updateTableResultInfo = async (tournamentId, teamTournamentId, tableId) =>
             return
         }
         if (match.homeTournamentTeamId == teamTournamentId){
-            console.log('--------------------------')
-            console.log(match.homeScore)
-            console.log(match.visitorScore)
             if(match.homeScore > match.visitorScore) {
                 win += 1
                 point += 3
