@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt')
 const asyncMiddleware = require('../middlewares/async_middleware')
 const { responseData, responseError } = require('../helpers/response')
 const { getOranziers, findOrCreate, getReferees, getOrganzier, updateOrganzier, getReferee, updateReferee } = require('../queries/user_query')
-const { findOrCreatePitch, getPitches, getPitch, updatePitch } = require('../queries/pitch_query')
-const { getAll, findOrCreate: findOrCreateCategory, getCategory, updateCategory } = require('../queries/category_query')
+const { findOrCreatePitch, getPitches, getPitch, updatePitch, deletePitch } = require('../queries/pitch_query')
+const { getAll, findOrCreate: findOrCreateCategory, getCategory, updateCategory, deleteCategory } = require('../queries/category_query')
 const { createManual, getManual, destroyManual } = require('../queries/manual_query')
 
 exports.organizers = async (req, res) => {
@@ -17,6 +17,18 @@ exports.referees = async (req, res) => {
 
 exports.pitches = async (req, res) => {
     responseData(res, await getPitches())
+}
+
+exports.removePitch = async (req, res) => {
+    const { id } = req.params
+    await deletePitch(id)
+    responseData(res, await getPitches())
+}
+
+exports.removeCategory = async (req, res) => {
+    const { id } = req.params
+    await deleteCategory(id)
+    responseData(res, await getAll())
 }
 
 exports.categories = async (req, res) => {

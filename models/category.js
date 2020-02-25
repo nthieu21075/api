@@ -7,6 +7,10 @@ const Category = sequelizeDb.define('categories', {
         unique: true,
         allowNull: false
     },
+    hidden: {
+        type: sequelize.BOOLEAN,
+        defaultValue: false
+    },
     imageUrl: {
         type: sequelize.STRING
     },

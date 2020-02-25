@@ -1,5 +1,5 @@
 const { organizers, referees, creatrOrganizer, creatrReferee, pitches, createPitch, categories, createCategory, createManual, getManual, removeManual,
-  organizerDetail, updateOrganizer, refereeDetail, updateReferee, pitchDetail, updatePitch, updateCategory, categoryDetail
+  organizerDetail, updateOrganizer, refereeDetail, updateReferee, pitchDetail, updatePitch, updateCategory, categoryDetail, removePitch, removeCategory
 
 } = require('../../admins/index')
 const { asyncMiddleware } = require('../../middlewares/async_middleware')
@@ -21,11 +21,13 @@ module.exports = app => {
   app.post('/api/admins/create-pitch', withAuth, upload.single('image'), asyncMiddleware(createPitch))
   app.get('/api/admins/pitch-detail/:id', withAuth, asyncMiddleware(pitchDetail))
   app.post('/api/admins/update-pitch', withAuth, upload.single('image'), asyncMiddleware(updatePitch))
+  app.get('/api/admins/remove-pitch/:id', withAuth, asyncMiddleware(removePitch))
 
   app.get('/api/admins/categories', withAuth, asyncMiddleware(categories))
   app.post('/api/admins/create-category', withAuth, upload.single('image'), asyncMiddleware(createCategory))
   app.get('/api/admins/category-detail/:id', withAuth, asyncMiddleware(categoryDetail))
   app.post('/api/admins/update-category', withAuth, upload.single('image'), asyncMiddleware(updateCategory))
+  app.get('/api/admins/remove-category/:id', withAuth, asyncMiddleware(removeCategory))
 
   app.post('/api/admins/create-manual', upload.array('files'), asyncMiddleware(createManual))
   app.get('/api/admins/manual', withAuth, asyncMiddleware(getManual))

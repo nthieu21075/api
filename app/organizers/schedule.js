@@ -221,7 +221,7 @@ const singleElimination = (teamLength, tableId) => {
     }
 
     range = _.range(0, ((teamLength - bonusMatch) / 2) + 1, 2)
-
+    console.log(range)
     const matchTree = filterMatchTreeByRange(range)
     return matchData(matchTree, bonusMatch, tableId)
 }

@@ -13,6 +13,8 @@ exports.getById = (id) => Tournament.findOne({ where: { id: id }, include: ['cat
 
 exports.updateTournament = (id, fields) => Tournament.update(fields, { returning: true, where: { id: id } })
 
+exports.updateTournamentByField = (whereFields, fields) => Tournament.update(fields, { returning: true, where: whereFields })
+
 exports.searchTournament = (keyword, type) => {
   if (type == 'organizer') {
     return Tournament.findAll({
